@@ -1,0 +1,101 @@
+{
+  "workflow_version": "1.2.0",
+  "timestamps": {
+    "started": "2025-12-18T21:23:00Z",
+    "last_updated": "2025-12-18T21:28:00Z",
+    "completed": "2025-12-18T21:28:00Z"
+  },
+  "mode": "initial_scan",
+  "scan_level": "quick",
+  "project_root": "/workspaces/Tubeflow",
+  "output_folder": "/workspaces/Tubeflow/_bmad-output",
+  "completed_steps": [
+    {
+      "step": "step_1",
+      "status": "completed",
+      "timestamp": "2025-12-18T21:23:30Z",
+      "summary": "Classified as monorepo with 3 parts"
+    },
+    {
+      "step": "step_2",
+      "status": "completed",
+      "timestamp": "2025-12-18T21:24:30Z",
+      "summary": "Found 3 existing docs"
+    },
+    {
+      "step": "step_11",
+      "status": "completed",
+      "timestamp": "2025-12-18T21:26:00Z",
+      "summary": "Generated incomplete docs: api-contracts, data-models, component-inventories"
+    },
+    {
+      "step": "step_12",
+      "status": "completed",
+      "timestamp": "2025-12-18T21:28:00Z",
+      "summary": "Workflow complete"
+    }
+  ],
+  "current_step": "completed",
+  "findings": {
+    "project_classification": "Monorepo with 3 parts: web (Next.js), native (React Native), backend (Convex)",
+    "existing_docs": [
+      { "path": "README.md", "type": "readme", "part": "root" },
+      { "path": "apps/web/README.md", "type": "readme", "part": "web" },
+      {
+        "path": "packages/backend/convex/README.md",
+        "type": "readme",
+        "part": "backend"
+      }
+    ]
+  },
+  "project_types": [
+    {
+      "part_id": "web",
+      "project_type_id": "web",
+      "display_name": "Web Application"
+    },
+    {
+      "part_id": "native",
+      "project_type_id": "mobile",
+      "display_name": "Mobile Application"
+    },
+    {
+      "part_id": "backend",
+      "project_type_id": "backend",
+      "display_name": "Backend Service"
+    }
+  ],
+  "project_parts": [
+    {
+      "id": "web",
+      "root_path": "/workspaces/Tubeflow/apps/web",
+      "project_type_id": "web"
+    },
+    {
+      "id": "native",
+      "root_path": "/workspaces/Tubeflow/apps/native",
+      "project_type_id": "mobile"
+    },
+    {
+      "id": "backend",
+      "root_path": "/workspaces/Tubeflow/packages/backend",
+      "project_type_id": "backend"
+    }
+  ],
+  "outputs_generated": [
+    "project-scan-report.json",
+    "index.md",
+    "api-contracts-backend.md",
+    "data-models-backend.md",
+    "component-inventory-web.md",
+    "component-inventory-native.md",
+    "development-guide.md",
+    "architecture-web.md",
+    "architecture-native.md",
+    "architecture-backend.md",
+    "integration-architecture.md",
+    "project-overview.md",
+    "source-tree-analysis.md"
+  ],
+  "resume_instructions": "Workflow complete"
+}
