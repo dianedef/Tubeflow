@@ -10,16 +10,16 @@ import NoteItem from "./NoteItem";
 const Notes = () => {
   const [search, setSearch] = useState("");
 
-  const allNotes = useQuery(api.notes.getNotes);
-  const deleteNote = useMutation(api.notes.deleteNote);
+  const allVideos = useQuery(api.videos.getVideos);
+  const deleteVideo = useMutation(api.videos.deleteVideo);
 
-  const finalNotes = search
-    ? allNotes?.filter(
-        (note) =>
-          note.title.toLowerCase().includes(search.toLowerCase()) ||
-          note.content.toLowerCase().includes(search.toLowerCase()),
+  const finalVideos = search
+    ? allVideos?.filter(
+        (video) =>
+          video.title.toLowerCase().includes(search.toLowerCase()) ||
+          video.description.toLowerCase().includes(search.toLowerCase()),
       )
-    : allNotes;
+    : allVideos;
 
   return (
     <div className="container pb-10">
@@ -46,9 +46,9 @@ const Notes = () => {
       </div>
 
       <div className="border-[0.5px] mb-20 divide-y-[0.5px] divide-[#00000096] border-[#00000096]">
-        {finalNotes &&
-          finalNotes.map((note, index) => (
-            <NoteItem key={index} note={note} deleteNote={deleteNote} />
+        {finalVideos &&
+          finalVideos.map((video, index) => (
+            <NoteItem key={index} note={video} deleteNote={deleteVideo} />
           ))}
       </div>
 

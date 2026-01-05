@@ -15,14 +15,15 @@ export default function CreateNote() {
 
   const cancelButtonRef = useRef(null);
 
-  const createNote = useMutation(api.notes.createNote);
+  const createVideo = useMutation(api.videos.createVideo);
   const openaiKeySet = useQuery(api.openai.openaiKeySet) ?? true;
 
-  const createUserNote = async () => {
-    await createNote({
+  const createUserVideo = async () => {
+    await createVideo({
       title,
-      content,
-      isSummary: isChecked,
+      description: content,
+      videoUrl: "placeholder-url", // Placeholder
+      thumbnailUrl: "",
     });
     setOpen(false);
   };
@@ -43,7 +44,7 @@ export default function CreateNote() {
           />
           <span className="text-[17px] sm:text-3xl not-italic font-medium leading-[79%] tracking-[-0.75px]">
             {" "}
-            New Note
+            Upload Video
           </span>
         </button>
       </div>
@@ -86,7 +87,7 @@ export default function CreateNote() {
                           as="h3"
                           className="text-black text-center text-xl sm:text-left sm:text-[35px] pb-6 sm:pb-8 not-italic font-semibold leading-[90.3%] tracking-[-0.875px]"
                         >
-                          Create New Note
+                          Upload New Video
                         </Dialog.Title>
                         <div className="mt-2 space-y-3">
                           <div className="pb-2">
@@ -146,7 +147,7 @@ export default function CreateNote() {
                     <button
                       type="button"
                       className="button text-white text-center text-[17px] sm:text-2xl not-italic font-semibold leading-[90.3%] tracking-[-0.6px] px-[70px] py-2"
-                      onClick={createUserNote}
+                      onClick={createUserVideo}
                     >
                       Create
                     </button>
