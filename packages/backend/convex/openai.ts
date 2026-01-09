@@ -13,12 +13,12 @@ export const openaiKeySet = query({
 
 export const summary = internalAction({
   args: {
-    id: v.id("notes"),
+    id: v.id("videos"),
     title: v.string(),
     content: v.string(),
   },
   handler: async (ctx, { id, title, content }) => {
-    const prompt = `Take in the following note and return a summary: Title: ${title}, Note content: ${content}`;
+    const prompt = `Take in the following video and return a summary: Title: ${title}, Description: ${content}`;
 
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
@@ -64,12 +64,12 @@ export const summary = internalAction({
 
 export const saveSummary = internalMutation({
   args: {
-    id: v.id("notes"),
+    id: v.id("videos"),
     summary: v.string(),
   },
   handler: async (ctx, { id, summary }) => {
     await ctx.db.patch(id, {
-      summary: summary,
+      description: summary,
     });
   },
 });

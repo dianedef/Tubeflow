@@ -1,3 +1,12 @@
+import { QueryCtx, MutationCtx } from "./_generated/server";
+
+export async function getUserId(
+  ctx: QueryCtx | MutationCtx,
+): Promise<string | null> {
+  const identity = await ctx.auth.getUserIdentity();
+  return identity?.subject ?? null;
+}
+
 export function missingEnvVariableUrl(envVarName: string, whereToGet: string) {
   const deployment = deploymentName();
   if (!deployment) return `Missing ${envVarName} in environment variables.`;

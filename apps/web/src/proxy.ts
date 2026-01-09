@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/notes(.*)"]);
 
-export default clerkMiddleware(async (auth, request) => {
+export const proxy = clerkMiddleware(async (auth, request) => {
   if (isProtectedRoute(request)) {
     await auth.protect();
   }
