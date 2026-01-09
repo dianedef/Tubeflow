@@ -15,7 +15,7 @@ const Notes = () => {
 
   const finalVideos = search
     ? allVideos?.filter(
-        (video) =>
+        (video: { title: string; description: string }) =>
           video.title.toLowerCase().includes(search.toLowerCase()) ||
           video.description.toLowerCase().includes(search.toLowerCase()),
       )
@@ -29,7 +29,7 @@ const Notes = () => {
       <div className="px-5 sm:px-0">
         <div className="bg-white flex items-center h-[39px] sm:h-[55px] rounded-sm border border-solid gap-2 sm:gap-5 mb-10 border-[rgba(0,0,0,0.40)] px-3 sm:px-11">
           <Image
-            src={"/images/search.svg"}
+            src="/images/search.svg"
             width={23}
             height={22}
             alt="search"
@@ -47,9 +47,19 @@ const Notes = () => {
 
       <div className="border-[0.5px] mb-20 divide-y-[0.5px] divide-[#00000096] border-[#00000096]">
         {finalVideos &&
-          finalVideos.map((video, index) => (
-            <NoteItem key={index} note={video} deleteNote={deleteVideo} />
-          ))}
+          finalVideos.map(
+            (
+              video: {
+                _id: string;
+                title: string;
+                description: string;
+                thumbnailUrl?: string;
+                views: number;
+                _creationTime: number;
+              },
+              index: number,
+            ) => <NoteItem key={index} note={video} />,
+          )}
       </div>
 
       <CreateNote />
