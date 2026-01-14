@@ -30,4 +30,11 @@ export default defineSchema({
     userId: v.string(),
     type: v.union(v.literal("like"), v.literal("dislike")),
   }),
+  notes: defineTable({
+    videoId: v.id("videos"),
+    userId: v.string(),
+    content: v.string(),
+    timestamp: v.optional(v.number()), // Video timestamp in seconds
+    createdAt: v.number(),
+  }),
 });
