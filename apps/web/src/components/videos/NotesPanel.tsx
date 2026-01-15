@@ -10,10 +10,11 @@ interface Note {
   content: string;
   timestamp?: number;
   createdAt: number;
+  videoId: Id<"videos">;
 }
 
 interface NotesPanelProps {
-  videoId: Id<"videos">;
+  videoId: string;
   currentTime: number;
 }
 

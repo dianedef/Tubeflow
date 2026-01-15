@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@packages/backend/convex/_generated/api";
+import { Id } from "@packages/backend/convex/_generated/dataModel";
 
 interface YouTubeVideo {
   id: string;
@@ -14,20 +15,26 @@ interface YouTubeVideo {
 }
 
 interface Playlist {
-  _id: string;
-  name: string;
-  videoIds: string[];
+  _id: Id<"playlists">;
+ number;
 }
 
 export default function VideosPage() {
-  const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<Id<"playlists"> | null>(null);
   const [newPlaylistName, setNewPlaylistName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   
   // Use the functions from the videos module
   const youtubeVideos = useQuery(api.videos.getYouTubeFeed) as YouTubeVideo[] | undefined;
   const playlists = useQuery(api.videos.getPlaylists) as Playlist[] | undefined;
   const createPlaylist = useMutation(api.videos.createPlaylist);
   const addToPlaylist = useMutation(api.videos.addVideoToPlaylist);
+
+  useEffect(() => {
+    if (youtubeVideos !== undefined) {
+      setIsLoading(false);
+    }
+  }, [youtubeVideos]);
 
   const handleCreatePlaylist = async () => {
     if (!newPlaylistName.trim()) return;
@@ -92,17 +99,23 @@ export default function VideosPage() {
           </div>
         </div>
 
-        {!youtubeVideos ? (
+        {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">Loading YouTube feed...</p>
+            <div className="flex justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+            <p className="text-gray-600 mt-4">Loading YouTube feed...</p>
           </div>
-        ) : youtubeVideos.length === 0 ? (
+        ) : youtubeVideos && youtubeVideos.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600">No videos found in your YouTube feed</p>
+            <p className="text-sm text-gray-500 mt-2">
+              This is currently using mock data. Set up YOUTUBE_API_KEY environment variable for real data.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {youtubeVideos.map((video) => (
+            {youtubeVideos?.map((video) => (
               <div
                 key={video.id}
                 className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
