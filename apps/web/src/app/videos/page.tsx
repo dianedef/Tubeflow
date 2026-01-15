@@ -23,11 +23,11 @@ export default function VideosPage() {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const [newPlaylistName, setNewPlaylistName] = useState("");
   
-  // These would need to be implemented in the backend
-  const youtubeVideos = useQuery(api.youtube.getFeed) as YouTubeVideo[] | undefined;
-  const playlists = useQuery(api.playlists.getPlaylists) as Playlist[] | undefined;
-  const createPlaylist = useMutation(api.playlists.createPlaylist);
-  const addToPlaylist = useMutation(api.playlists.addVideoToPlaylist);
+  // Use the functions from the videos module
+  const youtubeVideos = useQuery(api.videos.getYouTubeFeed) as YouTubeVideo[] | undefined;
+  const playlists = useQuery(api.videos.getPlaylists) as Playlist[] | undefined;
+  const createPlaylist = useMutation(api.videos.createPlaylist);
+  const addToPlaylist = useMutation(api.videos.addVideoToPlaylist);
 
   const handleCreatePlaylist = async () => {
     if (!newPlaylistName.trim()) return;
