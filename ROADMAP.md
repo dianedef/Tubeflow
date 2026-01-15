@@ -44,3 +44,23 @@
 - [ ] Prepare for YouTube API integration
 
 **Notes**: Focus on front-end UI/UX with placeholders. YouTube API for fetching videos added later. Commit this file after each major update.
+
+## 🔮 Roadmap - Prochaines Fonctionnalités
+
+### Phase 1 (Court terme)
+- [ ] Click timestamp pour seek dans la vidéo
+- [ ] Recherche dans les notes
+- [ ] Export notes en Markdown/PDF
+- [ ] Raccourcis clavier (space = pause, etc.)
+
+### Phase 2 (Moyen terme)
+- [ ] Extraction automatique des thumbnails
+- [ ] Détection automatique des chapitres vidéo
+- [ ] Notes collaboratives (partage)
+- [ ] Tags et catégories
+
+### Phase 3 (Long terme)
+- [ ] Transcription audio automatique (Whisper)
+- [ ] AI Summary des vidéos
+- [ ] Annotations visuelles sur la timeline
+- [ ] Support streaming live
