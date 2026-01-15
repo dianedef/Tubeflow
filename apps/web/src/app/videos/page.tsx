@@ -108,9 +108,9 @@ export default function VideosPage() {
           </div>
         ) : youtubeVideos && youtubeVideos.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">No videos found in your YouTube feed</p>
+            <p className="text-gray-600">No videos found</p>
             <p className="text-sm text-gray-500 mt-2">
-              This is currently using mock data. Set up YOUTUBE_API_KEY environment variable for real data.
+              Try adding a channel ID or check your YouTube API configuration
             </p>
           </div>
         ) : (
