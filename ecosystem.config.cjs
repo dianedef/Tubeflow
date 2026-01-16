@@ -3,9 +3,9 @@ module.exports = {
     name: "tubeflow",
     cwd: "/root/tubeflow",
     script: "bash",
-    args: ["-c", "export PORT=3004 && flox activate -- yarn dev"],
+    args: ["-c", "export PORT=3000 && flox activate -- yarn dev"],
     env: {
-      PORT: 3004
+      PORT: 3000
     },
     autorestart: true,
     watch: false
