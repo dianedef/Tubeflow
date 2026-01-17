@@ -32,12 +32,6 @@ export default function NotesPage() {
             </p>
           </div>
 
-          <div className="mb-6 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm sm:hidden">
-            <p className="text-sm text-foreground text-center">
-              📝 Prenez des notes pendant vos vidéos
-            </p>
-          </div>
-
           <Notes />
 
           <div className="mt-8 text-center text-muted-foreground text-sm">

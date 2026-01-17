@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/Header";
+import SwipeablePlaylistCard from "@/components/playlists/SwipeablePlaylistCard";
 import { List, Sparkles, Plus } from "lucide-react";
 import Link from "next/link";
 
@@ -58,6 +59,32 @@ const samplePlaylists: PlaylistData[] = [
 ];
 
 export default function PlaylistsPage() {
+  const handlePlayAll = (id: string) => {
+    console.log("Play all videos in playlist", id);
+    // TODO: Navigate to first video of playlist with autoplay
+  };
+
+  const handleEdit = (id: string) => {
+    console.log("Edit playlist", id);
+    // TODO: Navigate to edit page or open modal
+  };
+
+  const handleShare = (id: string) => {
+    console.log("Share playlist", id);
+    // TODO: Open share modal
+  };
+
+  const handleDelete = (id: string) => {
+    console.log("Delete playlist", id);
+    // TODO: Confirm and delete
+    alert("Playlist exemple - suppression simulée");
+  };
+
+  const handleClick = (id: string) => {
+    console.log("Navigate to playlist", id);
+    // TODO: Navigate to playlist detail page
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -89,66 +116,27 @@ export default function PlaylistsPage() {
               </Link>
             </div>
             <p className="text-muted-foreground text-sm ml-14">
-              Organisez vos vidéos • {samplePlaylists.length} playlists
+              Swipe pour gérer • {samplePlaylists.length} playlists
             </p>
           </div>
 
           <div className="mb-6 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm sm:hidden">
             <p className="text-sm text-foreground text-center">
-              👆 Appuyez sur une playlist pour voir les détails
+              👈 Swipe gauche/droite pour les actions 👉
             </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-4">
             {samplePlaylists.map((playlist) => (
-              <div
+              <SwipeablePlaylistCard
                 key={playlist.id}
-                className="group relative bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-sm hover:bg-white/10 transition-all cursor-pointer"
-              >
-                <div className="aspect-video relative">
-                  <img
-                    src={playlist.thumbnailUrl}
-                    alt={playlist.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <div className="flex items-center justify-between text-white text-sm">
-                      <span className="bg-black/50 px-2 py-1 rounded-full">
-                        {playlist.videoCount} vidéos
-                      </span>
-                      {!playlist.isPublic && (
-                        <span className="bg-black/50 px-2 py-1 rounded-full">
-                          Privé
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-primary-foreground mb-2 group-hover:text-blue-400 transition-colors">
-                    {playlist.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                    {playlist.description}
-                  </p>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>
-                      Créée le{" "}
-                      {new Date(playlist.createdAt).toLocaleDateString("fr-FR")}
-                    </span>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        playlist.isPublic
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-gray-500/20 text-gray-400"
-                      }`}
-                    >
-                      {playlist.isPublic ? "Public" : "Privé"}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                playlist={playlist}
+                onPlayAll={handlePlayAll}
+                onEdit={handleEdit}
+                onShare={handleShare}
+                onDelete={handleDelete}
+                onClick={handleClick}
+              />
             ))}
           </div>
 
@@ -170,7 +158,7 @@ export default function PlaylistsPage() {
           )}
 
           <div className="mt-8 text-center text-muted-foreground text-sm">
-            <p>Organisez vos vidéos en playlists • Partagez avec vos amis</p>
+            <p>Swipe gauche pour partager/supprimer • Swipe droite pour lire/modifier</p>
           </div>
         </div>
       </div>

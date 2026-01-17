@@ -4,7 +4,7 @@ import { api } from "@packages/backend/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import Image from "next/image";
 import { useState } from "react";
-import NoteItem from "./NoteItem";
+import SwipeableNoteCard from "./SwipeableNoteCard";
 
 // Sample notes data for demonstration
 const sampleNotes = [
@@ -100,45 +100,81 @@ const Notes = () => {
       )
     : videosData;
 
+  const handlePin = (id: string) => {
+    console.log("Pin note", id);
+    // TODO: Implement pin functionality
+  };
+
+  const handleEdit = (id: string) => {
+    console.log("Edit note", id);
+    // TODO: Navigate to edit page or open modal
+  };
+
+  const handleDelete = (id: string) => {
+    if (typeof id === "string" && id.startsWith("note-")) {
+      alert("Note exemple - suppression simulée");
+    } else {
+      deleteVideo({ id: id as any });
+    }
+  };
+
   return (
     <div className="container pb-10">
-      <h1 className="text-center text-[20px] sm:text-[43px] not-italic font-normal sm:font-medium leading-[114.3%] tracking-[-1.075px] sm:mt-8 my-4 sm:mb-10">
-        Your Notes
-      </h1>
       <div className="px-5 sm:px-0">
-        <div className="bg-card flex items-center h-[39px] sm:h-[55px] rounded-sm border border-solid gap-2 sm:gap-5 mb-10 border-gray-400/40 px-3 sm:px-11">
+        <div className="bg-card/50 backdrop-blur-sm flex items-center h-[39px] sm:h-[55px] rounded-xl border border-white/20 gap-2 sm:gap-5 mb-8 px-3 sm:px-6">
           <Image
             src="/images/search.svg"
             width={23}
             height={22}
             alt="search"
-            className="cursor-pointer sm:w-[23px] sm:h-[22px] w-[20px] h-[20px]"
+            className="cursor-pointer sm:w-[23px] sm:h-[22px] w-[20px] h-[20px] opacity-70"
           />
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Rechercher dans les notes..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 text-[17px] sm:text-2xl not-italic font-light leading-[114.3%] tracking-[-0.6px] focus:outline-0 focus:ring-0 focus:border-0 border-0"
+            className="flex-1 text-[15px] sm:text-lg not-italic font-light leading-[114.3%] tracking-[-0.4px] focus:outline-0 focus:ring-0 focus:border-0 border-0 bg-transparent placeholder:text-muted-foreground"
           />
         </div>
       </div>
 
-      <div className="border-[0.5px] mb-20 divide-y-[0.5px] divide-border border-border">
+      <div className="mb-6 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm sm:hidden">
+        <p className="text-sm text-foreground text-center">
+          👈 Swipe gauche/droite pour les actions 👉
+        </p>
+      </div>
+
+      <div className="space-y-4">
         {finalVideos &&
           finalVideos.map(
-            (
-              video: {
-                _id: string;
-                title: string;
-                description: string;
-                thumbnailUrl?: string;
-                views: number;
-                _creationTime: number;
-              },
-              index: number,
-            ) => <NoteItem key={index} note={video} />,
+            (note: {
+              _id: string;
+              title: string;
+              description: string;
+              thumbnailUrl?: string;
+              views: number;
+              _creationTime: number;
+            }) => (
+              <SwipeableNoteCard
+                key={note._id}
+                note={note}
+                onPin={handlePin}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ),
           )}
+      </div>
+
+      {(!finalVideos || finalVideos.length === 0) && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Aucune note trouvée</p>
+        </div>
+      )}
+
+      <div className="mt-8 text-center text-muted-foreground text-sm">
+        <p>Swipe gauche pour modifier/supprimer • Swipe droite pour épingler</p>
       </div>
     </div>
   );

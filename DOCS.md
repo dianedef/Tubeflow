@@ -15,7 +15,7 @@ TubeFlow utilise une architecture complète pour gérer les données utilisateur
 | `users` | Utilisateurs synchronisés depuis Clerk | clerkId, email, name, avatarUrl, createdAt, updatedAt |
 | `settings` | Préférences utilisateur | userId, theme, language, notifications, playback, notes |
 | `playlists` | Playlists de vidéos | userId, name, description, videoIds, isPublic |
-| `subscriptions` | Abonnements utilisateur | userId, plan, status, stripeCustomerId |
+| `subscriptions` | Abonnements utilisateur (Polar) | userId, plan, status, polarCustomerId, polarSubscriptionId |
 | `videos` | Vidéos sauvegardées | userId, title, description, videoUrl, views, likes |
 | `notes` | Notes timestampées | videoId, userId, content, timestamp |
 | `channels` | Profils de chaînes | userId, name, description, avatarUrl |
@@ -28,6 +28,8 @@ Toutes les tables utilisent des index optimisés pour les requêtes fréquentes 
 - `by_user_id` - Filtrage par utilisateur
 - `by_video_id` - Filtrage par vidéo
 - `by_clerk_id` - Lookup utilisateur depuis Clerk ID
+- `by_polar_customer_id` - Lookup subscription par Polar customer
+- `by_polar_subscription_id` - Lookup subscription par Polar subscription
 
 ---
 
@@ -102,9 +104,12 @@ Toutes les tables utilisent des index optimisés pour les requêtes fréquentes 
 | `getSubscription` | Query | Récupère l'abonnement de l'utilisateur avec ses features |
 | `getSubscriptionLimits` | Query | Récupère les limites du plan actuel |
 | `checkLimit` | Query | Vérifie si une action est autorisée selon le plan |
-| `updateSubscription` | Internal Mutation | Met à jour depuis webhook Stripe |
-| `cancelSubscription` | Mutation | Annule l'abonnement |
+| `upsertSubscription` | Internal Mutation | Crée/met à jour depuis webhook Polar |
+| `updateSubscriptionStatus` | Internal Mutation | Met à jour le statut depuis webhook Polar |
+| `linkCustomerToUser` | Internal Mutation | Lie un customer Polar à un utilisateur |
+| `cancelSubscription` | Mutation | Marque l'abonnement comme à annuler |
 | `getPlans` | Query | Liste tous les plans disponibles |
+| `getPolarCheckoutInfo` | Query | Récupère les infos pour le checkout Polar |
 
 **Plans disponibles :**
 
@@ -119,6 +124,7 @@ Toutes les tables utilisent des index optimisés pour les requêtes fréquentes 
 | Endpoint | Méthode | Description |
 |----------|---------|-------------|
 | `/clerk-webhook` | POST | Webhook Clerk pour sync des utilisateurs |
+| `/polar-webhook` | POST | Webhook Polar pour gestion des abonnements |
 
 ---
 
@@ -307,5 +313,145 @@ function UserSync() {
   }, [isLoaded, user, ensureUser]);
 
   return null;
+}
+```
+
+---
+
+## Intégration Polar (Paiements)
+
+### Overview
+
+TubeFlow utilise [Polar](https://polar.sh) pour la gestion des abonnements et paiements. Polar fournit une plateforme de monétisation adaptée aux SaaS.
+
+### Événements Webhook Polar
+
+Le webhook `/polar-webhook` gère les événements suivants :
+
+| Événement | Action |
+|-----------|--------|
+| `subscription.created` | Crée/met à jour l'abonnement |
+| `subscription.updated` | Met à jour l'abonnement |
+| `subscription.active` | Active l'abonnement |
+| `subscription.canceled` | Marque comme annulé |
+| `subscription.revoked` | Révoque et downgrade à free |
+| `subscription.past_due` | Marque comme impayé |
+| `customer.created` | Lie le customer à l'utilisateur |
+
+### Flux d'abonnement
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     UTILISATEUR                              │
+│  1. Clique "Upgrade to Pro" sur /preferences                │
+└──────────────┬──────────────────────────────────────────────┘
+               │
+               │ 2. Redirigé vers Polar Checkout
+               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                        POLAR                                 │
+│  - Affiche le formulaire de paiement                        │
+│  - Traite le paiement                                       │
+│  - Crée le customer & subscription                          │
+└──────────────┬──────────────────────────────────────────────┘
+               │
+               │ 3. Webhook events
+               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 CONVEX (/polar-webhook)                      │
+│  - Vérifie la signature du webhook                          │
+│  - Trouve l'utilisateur par email                           │
+│  - Crée/met à jour la subscription                          │
+│  - Active les features Pro/Team                             │
+└──────────────┬──────────────────────────────────────────────┘
+               │
+               │ 4. Real-time update
+               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    FRONTEND                                  │
+│  - useQuery(api.subscriptions.getSubscription) se met à jour│
+│  - UI reflète le nouveau plan                               │
+│  - Features Pro débloquées                                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Mapping Produits Polar → Plans
+
+Dans `convex/http.ts`, configure le mapping entre tes Product IDs Polar et les plans :
+
+```typescript
+function mapPolarProductToPlan(productId: string): "free" | "pro" | "team" {
+  const productMap: Record<string, "free" | "pro" | "team"> = {
+    "prod_xxx": "pro",   // Remplace par ton Product ID Pro
+    "prod_yyy": "team",  // Remplace par ton Product ID Team
+  };
+
+  return productMap[productId] ?? "pro";
+}
+```
+
+### Utilisation dans le Frontend
+
+#### Afficher le plan actuel
+
+```tsx
+import { useQuery } from "convex/react";
+import { api } from "@packages/backend/convex/_generated/api";
+
+function SubscriptionStatus() {
+  const subscription = useQuery(api.subscriptions.getSubscription);
+
+  if (!subscription) return <Loading />;
+
+  return (
+    <div>
+      <p>Plan: {subscription.plan}</p>
+      <p>Status: {subscription.status}</p>
+      {subscription.cancelAtPeriodEnd && (
+        <p>Sera annulé à la fin de la période</p>
+      )}
+    </div>
+  );
+}
+```
+
+#### Bouton Upgrade avec Polar
+
+```tsx
+import { useQuery } from "convex/react";
+import { api } from "@packages/backend/convex/_generated/api";
+
+function UpgradeButton() {
+  const checkoutInfo = useQuery(api.subscriptions.getPolarCheckoutInfo);
+
+  const handleUpgrade = () => {
+    // Utilise le Polar SDK ou redirige vers ton checkout link
+    // avec l'email pré-rempli pour lier automatiquement
+    window.location.href = `https://polar.sh/checkout/YOUR_PRODUCT_ID?email=${checkoutInfo?.email}`;
+  };
+
+  return (
+    <button onClick={handleUpgrade}>
+      Upgrade to Pro
+    </button>
+  );
+}
+```
+
+### Structure de la table subscriptions
+
+```typescript
+{
+  userId: string,              // Clerk user ID
+  plan: "free" | "pro" | "team",
+  status: "active" | "canceled" | "past_due" | "trialing" | "revoked",
+  polarCustomerId: string,     // Polar customer ID
+  polarSubscriptionId: string, // Polar subscription ID
+  polarProductId: string,      // Polar product ID
+  currentPeriodStart: number,  // Timestamp début période
+  currentPeriodEnd: number,    // Timestamp fin période
+  cancelAtPeriodEnd: boolean,  // Annulation programmée
+  createdAt: number,
+  updatedAt: number
 }
 ```

@@ -48,6 +48,7 @@ export const getSubscription = query({
         plan: "free" as const,
         status: "active" as const,
         features: PLANS.free,
+        cancelAtPeriodEnd: false,
       };
     }
 
@@ -155,58 +156,181 @@ export const checkLimit = query({
   },
 });
 
-// Update subscription (called from Stripe webhook)
-export const updateSubscription = internalMutation({
+// Upsert subscription from Polar webhook
+export const upsertSubscription = internalMutation({
   args: {
-    userId: v.string(),
+    polarCustomerId: v.string(),
+    polarSubscriptionId: v.string(),
+    polarProductId: v.string(),
+    customerEmail: v.string(),
     plan: v.union(v.literal("free"), v.literal("pro"), v.literal("team")),
     status: v.union(
       v.literal("active"),
       v.literal("canceled"),
       v.literal("past_due"),
-      v.literal("trialing")
+      v.literal("trialing"),
+      v.literal("revoked")
     ),
-    stripeCustomerId: v.optional(v.string()),
-    stripeSubscriptionId: v.optional(v.string()),
-    currentPeriodStart: v.optional(v.number()),
-    currentPeriodEnd: v.optional(v.number()),
+    currentPeriodStart: v.number(),
+    currentPeriodEnd: v.number(),
+    cancelAtPeriodEnd: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const existingSubscription = await ctx.db
+    const now = Date.now();
+
+    // Try to find existing subscription by Polar subscription ID
+    let existingSubscription = await ctx.db
       .query("subscriptions")
-      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
+      .withIndex("by_polar_subscription_id", (q) =>
+        q.eq("polarSubscriptionId", args.polarSubscriptionId)
+      )
       .first();
 
-    const now = Date.now();
+    // If not found, try by Polar customer ID
+    if (!existingSubscription) {
+      existingSubscription = await ctx.db
+        .query("subscriptions")
+        .withIndex("by_polar_customer_id", (q) =>
+          q.eq("polarCustomerId", args.polarCustomerId)
+        )
+        .first();
+    }
+
+    // If still not found, try to find user by email and link
+    if (!existingSubscription) {
+      const user = await ctx.db
+        .query("users")
+        .filter((q) => q.eq(q.field("email"), args.customerEmail))
+        .first();
+
+      if (user) {
+        // Check if user already has a subscription
+        existingSubscription = await ctx.db
+          .query("subscriptions")
+          .withIndex("by_user_id", (q) => q.eq("userId", user.clerkId))
+          .first();
+      }
+    }
 
     if (existingSubscription) {
       await ctx.db.patch(existingSubscription._id, {
         plan: args.plan,
         status: args.status,
-        stripeCustomerId: args.stripeCustomerId,
-        stripeSubscriptionId: args.stripeSubscriptionId,
+        polarCustomerId: args.polarCustomerId,
+        polarSubscriptionId: args.polarSubscriptionId,
+        polarProductId: args.polarProductId,
         currentPeriodStart: args.currentPeriodStart,
         currentPeriodEnd: args.currentPeriodEnd,
+        cancelAtPeriodEnd: args.cancelAtPeriodEnd,
         updatedAt: now,
       });
       return existingSubscription._id;
-    } else {
-      return await ctx.db.insert("subscriptions", {
-        userId: args.userId,
-        plan: args.plan,
-        status: args.status,
-        stripeCustomerId: args.stripeCustomerId,
-        stripeSubscriptionId: args.stripeSubscriptionId,
-        currentPeriodStart: args.currentPeriodStart,
-        currentPeriodEnd: args.currentPeriodEnd,
-        createdAt: now,
-        updatedAt: now,
+    }
+
+    // Find user by email to create new subscription
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), args.customerEmail))
+      .first();
+
+    if (!user) {
+      console.error(`No user found for email: ${args.customerEmail}`);
+      throw new Error("User not found");
+    }
+
+    return await ctx.db.insert("subscriptions", {
+      userId: user.clerkId,
+      plan: args.plan,
+      status: args.status,
+      polarCustomerId: args.polarCustomerId,
+      polarSubscriptionId: args.polarSubscriptionId,
+      polarProductId: args.polarProductId,
+      currentPeriodStart: args.currentPeriodStart,
+      currentPeriodEnd: args.currentPeriodEnd,
+      cancelAtPeriodEnd: args.cancelAtPeriodEnd,
+      createdAt: now,
+      updatedAt: now,
+    });
+  },
+});
+
+// Update subscription status from Polar webhook
+export const updateSubscriptionStatus = internalMutation({
+  args: {
+    polarSubscriptionId: v.string(),
+    status: v.union(
+      v.literal("active"),
+      v.literal("canceled"),
+      v.literal("past_due"),
+      v.literal("trialing"),
+      v.literal("revoked")
+    ),
+    cancelAtPeriodEnd: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const subscription = await ctx.db
+      .query("subscriptions")
+      .withIndex("by_polar_subscription_id", (q) =>
+        q.eq("polarSubscriptionId", args.polarSubscriptionId)
+      )
+      .first();
+
+    if (!subscription) {
+      console.error(`Subscription not found: ${args.polarSubscriptionId}`);
+      return;
+    }
+
+    await ctx.db.patch(subscription._id, {
+      status: args.status,
+      cancelAtPeriodEnd: args.cancelAtPeriodEnd,
+      updatedAt: Date.now(),
+    });
+
+    // If revoked, downgrade to free
+    if (args.status === "revoked") {
+      await ctx.db.patch(subscription._id, {
+        plan: "free",
       });
     }
   },
 });
 
-// Cancel subscription (downgrade to free)
+// Link Polar customer to existing user by email
+export const linkCustomerToUser = internalMutation({
+  args: {
+    polarCustomerId: v.string(),
+    customerEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Find user by email
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), args.customerEmail))
+      .first();
+
+    if (!user) {
+      console.log(`No user found for email: ${args.customerEmail}, will link when subscription created`);
+      return;
+    }
+
+    // Check if user already has a subscription
+    const existingSubscription = await ctx.db
+      .query("subscriptions")
+      .withIndex("by_user_id", (q) => q.eq("userId", user.clerkId))
+      .first();
+
+    if (existingSubscription) {
+      // Update with Polar customer ID
+      await ctx.db.patch(existingSubscription._id, {
+        polarCustomerId: args.polarCustomerId,
+        updatedAt: Date.now(),
+      });
+    }
+    // If no subscription exists, it will be created when subscription.created fires
+  },
+});
+
+// Cancel subscription (user-initiated via Polar portal)
 export const cancelSubscription = mutation({
   args: {},
   handler: async (ctx) => {
@@ -219,8 +343,9 @@ export const cancelSubscription = mutation({
       .first();
 
     if (subscription) {
+      // Note: This just marks it locally. Real cancellation should go through Polar
       await ctx.db.patch(subscription._id, {
-        status: "canceled",
+        cancelAtPeriodEnd: true,
         updatedAt: Date.now(),
       });
     }
@@ -235,5 +360,26 @@ export const getPlans = query({
       id: key,
       ...value,
     }));
+  },
+});
+
+// Get Polar checkout URL (to be used with Polar SDK on frontend)
+export const getPolarCheckoutInfo = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getUserId(ctx);
+    if (!userId) return null;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", userId))
+      .first();
+
+    if (!user) return null;
+
+    return {
+      email: user.email,
+      userId: userId,
+    };
   },
 });

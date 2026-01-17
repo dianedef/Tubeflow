@@ -41,7 +41,7 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_user_id", ["userId"]),
 
-  // User subscriptions (for premium features)
+  // User subscriptions (for premium features) - managed by Polar
   subscriptions: defineTable({
     userId: v.string(),
     plan: v.union(v.literal("free"), v.literal("pro"), v.literal("team")),
@@ -49,15 +49,22 @@ export default defineSchema({
       v.literal("active"),
       v.literal("canceled"),
       v.literal("past_due"),
-      v.literal("trialing")
+      v.literal("trialing"),
+      v.literal("revoked")
     ),
-    stripeCustomerId: v.optional(v.string()),
-    stripeSubscriptionId: v.optional(v.string()),
+    // Polar fields
+    polarCustomerId: v.optional(v.string()),
+    polarSubscriptionId: v.optional(v.string()),
+    polarProductId: v.optional(v.string()),
     currentPeriodStart: v.optional(v.number()),
     currentPeriodEnd: v.optional(v.number()),
+    cancelAtPeriodEnd: v.optional(v.boolean()),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_user_id", ["userId"]),
+  })
+    .index("by_user_id", ["userId"])
+    .index("by_polar_customer_id", ["polarCustomerId"])
+    .index("by_polar_subscription_id", ["polarSubscriptionId"]),
 
   // Playlists for organizing videos
   playlists: defineTable({
