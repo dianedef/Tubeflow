@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.tsx",
   "scripts": {
-    "dev": "expo start",
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "dev": "doppler run -- expo start",
+    "start": "doppler run -- expo start",
+    "android": "doppler run -- expo start --android",
+    "ios": "doppler run -- expo start --ios",
+    "web": "doppler run -- expo start --web",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

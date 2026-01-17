@@ -1,24 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   return (
-    <section className="bg_image">
+    <section className="bg-gradient-to-b from-transparent via-white via-[#d2e4f2] to-transparent bg-[length:261px_261px] bg-[image:linear-gradient(181deg,rgba(255,255,255,0)_57.92%,#fff_97.09%,rgba(255,255,255,0)_127.09%),url('/images/background.png')]">
       <div className="container py-16 sm:py-36 px-6 sm:px-0">
         <div className="flex sm:flex-wrap flex-nowrap justify-between items-center max-h-[690px] h-full">
-          <div className="">
-            <h2 className="font-montserrat pb-7 sm:pb-[26px] text-black text-[44px] sm:text-[75px] not-italic font-medium leading-[111.3%] tracking-[-1.1px] sm:tracking-[-1.875px]">
+          <div>
+            <h2 className="font-montserrat pb-7 sm:pb-[26px] text-[44px] sm:text-[75px] not-italic font-medium leading-[111.3%] tracking-[-1.1px] sm:tracking-[-1.875px]">
               The Ultimate <br /> Note-Taking Experience
             </h2>
-            <p className="font-montserrat sm:pb-16 max-w-[680px] text-black text-xl sm:text-3xl not-italic font-normal leading-[103.3%] tracking-[-0.5px] sm:tracking-[-0.75px] pb-11">
-              UseNotes harnesses the power of artificial intelligence to
-              revolutionize the way you capture, organize, and recall your
-              thoughts
+            <p className="font-montserrat sm:pb-16 max-w-[680px] text-xl sm:text-3xl not-italic font-normal leading-[103.3%] tracking-[-0.5px] sm:tracking-[-0.75px] pb-11">
+              UseNotes harnesses power of artificial intelligence to
+              revolutionize way you capture, organize, and recall your thoughts
             </p>
             <Link href={"/notes"}>
-              <button className="button gap-2.5 px-8 py-4 font-montserrat text-white text-xl sm:text-3xl not-italic font-semibold leading-[90.3%] tracking-[-0.5px] sm:tracking-[-0.75px]">
+              <Button
+                variant="primary"
+                className="gap-2.5 text-xl sm:text-3xl px-8 py-4"
+              >
                 Get Started
-              </button>
+              </Button>
             </Link>
           </div>
           <div className="max-w-[570px] w-full h-full">
@@ -29,10 +32,10 @@ const Hero = () => {
                   width={541}
                   height={673}
                   alt="hero"
-                  className="w-[344px] sm:w-[541px] "
+                  className="w-[344px] sm:w-[541px]"
                 />
               </div>
-              <div className=" absolute z-50 inset-0 flex justify-center items-center">
+              <div className="absolute z-50 inset-0 flex justify-center items-center">
                 <Image
                   src={"/images/hero.png"}
                   width={561}

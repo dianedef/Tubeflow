@@ -34,7 +34,7 @@ const Testimonials = () => {
   return (
     <section
       id="reviews"
-      className="bg_image bg_circle relative overflow-hidden"
+      className="bg-gradient-to-b from-transparent via-white via-[#d2e4f2] to-transparent bg-[length:261px_261px] bg-[image:linear-gradient(181deg,rgba(255,255,255,0)_57.92%,#fff_97.09%,rgba(255,255,255,0)_127.09%),url('/images/background.png')] relative overflow-hidden"
     >
       <Image
         src={"/images/blue-circle-right.svg"}
@@ -44,10 +44,10 @@ const Testimonials = () => {
         className="absolute hidden sm:block -right-40 top-1/4 h-[531px]"
       />
       <div className="container py-11 sm:py-16 px-6 sm:px-0">
-        <p className="text-black text-[17px] sm:text-3xl not-italic font-medium leading-[90.3%] tracking-[-0.75px] text-center font-montserrat pb-2 sm:pb-[18px]">
+        <p className="text-[17px] sm:text-3xl not-italic font-medium leading-[90.3%] tracking-[-0.75px] text-center font-montserrat pb-2 sm:pb-[18px]">
           Reviews
         </p>
-        <h3 className=" text-black text-3xl sm:text-[57px] not-italic font-medium leading-[90.3%] tracking-[-1.425px] font-montserrat text-center pb-[20px] sm:pb-[87px]">
+        <h3 className="text-3xl sm:text-[57px] not-italic font-medium leading-[90.3%] tracking-[-1.425px] font-montserrat text-center pb-[20px] sm:pb-[87px]">
           User Testimonials
         </h3>
 

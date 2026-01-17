@@ -1,8 +1,13 @@
 "use client";
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
+import {
+  ExclamationTriangleIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { IconButton } from "@/components/ui/icon-button";
 
 export default function DeleteNote({ deleteAction }: any) {
   const [open, setOpen] = useState(false);
@@ -11,14 +16,14 @@ export default function DeleteNote({ deleteAction }: any) {
 
   return (
     <>
-      <Image
+      <IconButton
+        variant="ghost"
+        size="default"
         onClick={() => setOpen(true)}
-        src={"/images/delete.svg"}
-        width={20}
-        height={20}
-        alt="search"
-        className="cursor-pointer"
-      />
+        aria-label="Delete note"
+      >
+        <TrashIcon className="h-5 w-5 text-foreground" />
+      </IconButton>
 
       <Transition.Root show={open} as={Fragment}>
         <Dialog
@@ -77,24 +82,24 @@ export default function DeleteNote({ deleteAction }: any) {
                     </div>
                   </div>
                   <div className="bg-muted px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button
-                      type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
-                      onClick={() => {
-                        deleteAction();
-                        setOpen(false);
-                      }}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-card px-3 py-2 text-sm font-semibold text-foreground shadow-xs ring-1 ring-inset ring-border hover:bg-muted sm:mt-0 sm:w-auto"
-                      onClick={() => setOpen(false)}
-                      ref={cancelButtonRef}
-                    >
-                      Cancel
-                    </button>
+                    <ButtonGroup orientation="horizontal">
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          deleteAction();
+                          setOpen(false);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setOpen(false)}
+                        ref={cancelButtonRef as any}
+                      >
+                        Cancel
+                      </Button>
+                    </ButtonGroup>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

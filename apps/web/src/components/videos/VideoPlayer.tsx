@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import { Play, Pause } from "lucide-react";
+import { IconButton } from "@/components/ui/icon-button";
 
 interface OnProgressProps {
   played: number;
@@ -21,9 +23,9 @@ export default function VideoPlayer({ url, onTimeUpdate }: VideoPlayerProps) {
   const [progress, setProgress] = useState(0);
 
   const handleProgress = (state: any) => {
-    if (state && typeof state.played === 'number') {
+    if (state && typeof state.played === "number") {
       setProgress(state.played * 100);
-      if (onTimeUpdate && typeof state.playedSeconds === 'number') {
+      if (onTimeUpdate && typeof state.playedSeconds === "number") {
         onTimeUpdate(state.playedSeconds);
       }
     }
@@ -37,7 +39,7 @@ export default function VideoPlayer({ url, onTimeUpdate }: VideoPlayerProps) {
 
   return (
     <div className="w-full">
-      <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+      <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden">
         <ReactPlayer
           ref={playerRef}
           url={url}
@@ -49,17 +51,23 @@ export default function VideoPlayer({ url, onTimeUpdate }: VideoPlayerProps) {
           config={{}}
         />
       </div>
-      
+
       <div className="mt-2 flex items-center gap-4">
-        <button
+        <IconButton
+          variant="primary"
+          size="default"
           onClick={() => setPlaying(!playing)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          aria-label={playing ? "Pause" : "Play"}
         >
-          {playing ? "Pause" : "Play"}
-        </button>
-        <div className="flex-1 bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-blue-600 h-2 rounded-full transition-all"
+          {playing ? (
+            <Pause className="h-5 w-5" />
+          ) : (
+            <Play className="h-5 w-5" />
+          )}
+        </IconButton>
+        <div className="flex-1 bg-muted rounded-full h-2">
+          <div
+            className="bg-primary h-2 rounded-full transition-all"
             style={{ width: `${progress}%` }}
           />
         </div>

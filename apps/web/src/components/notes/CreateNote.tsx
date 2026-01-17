@@ -2,10 +2,12 @@
 
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import Image from "next/image";
+import { Plus } from "lucide-react";
 import Checkbox from "./Checkbox";
 import { api } from "@packages/backend/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 export default function CreateNote() {
   const [open, setOpen] = useState(false);
@@ -22,7 +24,7 @@ export default function CreateNote() {
     await createVideo({
       title,
       description: content,
-      videoUrl: "placeholder-url", // Placeholder
+      videoUrl: "placeholder-url",
       thumbnailUrl: "",
     });
     setOpen(false);
@@ -31,22 +33,16 @@ export default function CreateNote() {
   return (
     <>
       <div className="flex justify-center items-center">
-        <button
+        <Button
+          variant="primary"
           onClick={() => setOpen(true)}
-          className="button text-[#EBECEF] flex gap-4 justify-center items-center text-center px-8 sm:px-16 py-2"
+          className="flex gap-4 justify-center items-center text-center px-8 sm:px-16 py-2 sm:text-3xl"
         >
-          <Image
-            src={"/images/Add.png"}
-            width={40}
-            height={40}
-            alt="search"
-            className="float-right sm:w-[40px] sm:h-[40px] w-6 h-6"
-          />
+          <Plus className="sm:w-10 sm:h-10 w-6 h-6" />
           <span className="text-[17px] sm:text-3xl not-italic font-medium leading-[79%] tracking-[-0.75px]">
-            {" "}
             Upload Video
           </span>
-        </button>
+        </Button>
       </div>
 
       <Transition.Root show={open} as={Fragment}>
@@ -82,10 +78,10 @@ export default function CreateNote() {
                 <Dialog.Panel className="relative transform overflow-hidden rounded-[10px] bg-card text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[719px]">
                   <div className="bg-card px-4 pb-4 pt-5 sm:p-8 sm:pb-4">
                     <>
-                      <div className="mt-3  sm:mt-0 text-left">
+                      <div className="mt-3 sm:mt-0 text-left">
                         <Dialog.Title
                           as="h3"
-                          className="text-foreground text-center text-xl sm:text-left sm:text-[35px] pb-6 sm:pb-8 not-italic font-semibold leading-[90.3%] tracking-[-0.875px]"
+                          className="text-center text-xl sm:text-left sm:text-[35px] pb-6 sm:pb-8 not-italic font-semibold leading-[90.3%] tracking-[-0.875px]"
                         >
                           Upload New Video
                         </Dialog.Title>
@@ -93,7 +89,7 @@ export default function CreateNote() {
                           <div className="pb-2">
                             <label
                               htmlFor="title"
-                              className=" text-foreground text-[17px] sm:text-2xl not-italic font-medium leading-[90.3%] tracking-[-0.6px]"
+                              className="text-[17px] sm:text-2xl not-italic font-medium leading-[90.3%] tracking-[-0.6px]"
                             >
                               Title
                             </label>
@@ -106,15 +102,15 @@ export default function CreateNote() {
                                 autoComplete="title"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="border shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] rounded-lg border-solid border-input bg-card w-full py-2.5 px-[14px] text-foreground text-[17px] not-italic font-light leading-[90.3%] tracking-[-0.425px] sm:text-2xl"
+                                className="border shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] rounded-lg border-solid border-input bg-card w-full py-2.5 px-[14px] text-[17px] not-italic font-light leading-[90.3%] tracking-[-0.425px] sm:text-2xl"
                               />
                             </div>
                           </div>
 
-                          <div className="">
+                          <div>
                             <label
                               htmlFor="description"
-                              className=" text-foreground text-[17px] sm:text-2xl not-italic font-medium leading-[90.3%] tracking-[-0.6px]"
+                              className="text-[17px] sm:text-2xl not-italic font-medium leading-[90.3%] tracking-[-0.6px]"
                             >
                               The Note
                             </label>
@@ -124,12 +120,12 @@ export default function CreateNote() {
                                 name="description"
                                 rows={8}
                                 placeholder="Start your note "
-                                className="block w-full rounded-md border-0 py-1.5  border-input text-2xl shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-inset focus:ring-indigo-600  sm:leading-6 text-foreground text-[17px] not-italic font-light leading-[90.3%] tracking-[-0.425px] sm:text-2xl"
+                                className="block w-full rounded-md border-0 py-1.5 border-input text-2xl shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 text-[17px] not-italic font-light leading-[90.3%] tracking-[-0.425px] sm:text-2xl"
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                               />
                             </div>
-                            <p className="text-foreground text-[17px] sm:text-2xl not-italic font-medium leading-[90.3%] tracking-[-0.6px]">
+                            <p className="text-[17px] sm:text-2xl not-italic font-medium leading-[90.3%] tracking-[-0.6px]">
                               AI Features
                             </p>
                           </div>
@@ -143,14 +139,15 @@ export default function CreateNote() {
                       </div>
                     </>
                   </div>
-                  <div className=" px-4 py-3 mb-5 flex justify-center items-center">
-                    <button
+                  <div className="px-4 py-3 mb-5 flex justify-center items-center">
+                    <Button
+                      variant="primary"
                       type="button"
-                      className="button text-white text-center text-[17px] sm:text-2xl not-italic font-semibold leading-[90.3%] tracking-[-0.6px] px-[70px] py-2"
                       onClick={createUserVideo}
+                      className="text-[17px] sm:text-2xl px-[70px] py-2"
                     >
                       Create
-                    </button>
+                    </Button>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

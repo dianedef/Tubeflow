@@ -13,17 +13,23 @@ import { useUser } from "@clerk/clerk-react";
 import { UserNav } from "./common/UserNav";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
+import * as NavigationMenu from "@/components/ui/navigation-menu";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 
 type NavigationItem = {
   name: string;
   href: string;
   current: boolean;
 };
-
-const navigation: NavigationItem[] = [
-  { name: "Benefits", href: "#Benefits", current: true },
-  { name: "Reviews", href: "#reviews", current: false },
-];
 
 export default function Header() {
   const { user } = useUser();
@@ -63,68 +69,108 @@ export default function Header() {
                   <Logo />
                 </div>
                 {pathname === "/" && (
-                  <div className="flex flex-1 items-center justify-center ">
+                  <div className="flex flex-1 items-center justify-center">
                     <div className="hidden sm:ml-6 sm:block">
-                      <ul className="flex space-x-28">
-                        {navigation.map((item) => (
-                          <li key={item.name}>
-                            <Link
-                              href={item.href}
-                              className="text-foreground text-center text-xl not-italic font-normal leading-[normal]"
-                              aria-current={item.current ? "page" : undefined}
-                            >
-                              {item.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      <Menubar>
+                        <MenubarMenu>
+                          <MenubarTrigger>Navigation</MenubarTrigger>
+                          <MenubarContent>
+                            <MenubarItem>
+                              <Link href="#Benefits">Benefits</Link>
+                            </MenubarItem>
+                            <MenubarItem>
+                              <Link href="#reviews">Reviews</Link>
+                            </MenubarItem>
+                            <MenubarSeparator />
+                            <MenubarItem>
+                              <Link href="/videos">Videos</Link>
+                            </MenubarItem>
+                            <MenubarItem>
+                              <Link href="/notes">Notes</Link>
+                            </MenubarItem>
+                          </MenubarContent>
+                        </MenubarMenu>
+                        <MenubarMenu>
+                          <MenubarTrigger>Settings</MenubarTrigger>
+                          <MenubarContent>
+                            <MenubarItem>Preferences</MenubarItem>
+                            <MenubarItem>Account Settings</MenubarItem>
+                            <MenubarSeparator />
+                            <MenubarItem>Help & Support</MenubarItem>
+                          </MenubarContent>
+                        </MenubarMenu>
+                      </Menubar>
                     </div>
                   </div>
                 )}
-                {user ? (
-                  <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    <Link href="/videos">
-                      <button
-                        type="button"
-                        className=" text-foreground text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px]"
-                      >
-                        Videos
-                      </button>
-                    </Link>
-                    <Link href="/notes">
-                      <button
-                        type="button"
-                        className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px] button"
-                      >
-                        See your Notes
-                      </button>
-                    </Link>
-                    <ThemeToggle />
-                    <UserNav
-                      image={user?.imageUrl}
-                      name={user?.fullName!}
-                      email={user?.primaryEmailAddress?.emailAddress!}
-                    />
-                  </div>
-                ) : (
-                  <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    <Link
-                      href="/notes"
-                      className="border rounded-lg border-solid border-foreground text-foreground text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-2.5"
-                    >
-                      Sign in
-                    </Link>
-                    <Link
-                      href="/notes"
-                      className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px] button"
-                    >
-                      Get Started
-                    </Link>
-                  </div>
-                )}
+                <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  {user ? (
+                    <>
+                      <Link href="/videos">
+                        <Button
+                          variant="ghost"
+                          className="text-xl font-montserrat px-[22px] py-[11px]"
+                        >
+                          Videos
+                        </Button>
+                      </Link>
+                      <Link href="/notes">
+                        <Button
+                          variant="primary"
+                          className="text-xl font-montserrat px-[22px] py-[11px]"
+                        >
+                          See your Notes
+                        </Button>
+                      </Link>
+                      <ThemeToggle />
+                      <UserNav
+                        image={user?.imageUrl}
+                        name={user?.fullName!}
+                        email={user?.primaryEmailAddress?.emailAddress!}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Menubar>
+                        <MenubarMenu>
+                          <MenubarTrigger>Account</MenubarTrigger>
+                          <MenubarContent>
+                            <MenubarItem>
+                              <Link href="/notes">Sign in</Link>
+                            </MenubarItem>
+                            <MenubarSeparator />
+                            <MenubarItem>
+                              <Link href="/notes">Get Started</Link>
+                            </MenubarItem>
+                          </MenubarContent>
+                        </MenubarMenu>
+                        <MenubarMenu>
+                          <MenubarTrigger>Navigation</MenubarTrigger>
+                          <MenubarContent>
+                            <MenubarItem>
+                              <Link href="#Benefits">Benefits</Link>
+                            </MenubarItem>
+                            <MenubarItem>
+                              <Link href="#reviews">Reviews</Link>
+                            </MenubarItem>
+                          </MenubarContent>
+                        </MenubarMenu>
+                        <MenubarMenu>
+                          <MenubarTrigger>Settings</MenubarTrigger>
+                          <MenubarContent>
+                            <MenubarItem>Preferences</MenubarItem>
+                            <MenubarItem>Account Settings</MenubarItem>
+                            <MenubarSeparator />
+                            <MenubarItem>Help & Support</MenubarItem>
+                          </MenubarContent>
+                        </MenubarMenu>
+                      </Menubar>
+                      <ThemeToggle />
+                    </>
+                  )}
+                </div>
                 <div className="block sm:hidden">
-                  {/* Mobile menu button*/}
-                  <DisclosureButton className="relative inline-flex  items-center justify-center rounded-md p-2 text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white">
+                  <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="absolute -inset-0.5" />
                     <span className="sr-only">Open main menu</span>
                     {open ? (
@@ -140,31 +186,40 @@ export default function Header() {
 
           <DisclosurePanel className="sm:hidden bg-background border-t border-gray-200">
             <div className="space-y-1 px-2 pb-3 pt-2 flex flex-col gap-3 items-start">
-              {navigation.map((item) => (
-                <DisclosureButton
-                  key={item.name}
-                  as={Link}
-                  href={item.href}
-                  className="text-foreground text-center text-xl not-italic font-normal leading-[normal]"
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </DisclosureButton>
-              ))}
+              <DisclosureButton
+                as={Link}
+                href="#Benefits"
+                className="text-center text-xl not-italic font-normal leading-[normal]"
+              >
+                Benefits
+              </DisclosureButton>
+              <DisclosureButton
+                as={Link}
+                href="#reviews"
+                className="text-center text-xl not-italic font-normal leading-[normal]"
+              >
+                Reviews
+              </DisclosureButton>
               <div className="flex gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <ThemeToggle />
-                <Link
-                  href="/notes"
-                  className="border rounded-lg border-solid border-foreground text-foreground text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-[5px]"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/notes"
-                  className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-1.5 button"
-                >
-                  Get Started
-                </Link>
+                <ButtonGroup>
+                  <Link href="/notes">
+                    <Button
+                      variant="outlineAccent"
+                      className="text-xl font-montserrat px-5 py-[5px]"
+                    >
+                      Sign in
+                    </Button>
+                  </Link>
+                  <Link href="/notes">
+                    <Button
+                      variant="primary"
+                      className="text-xl font-montserrat px-5 py-1.5"
+                    >
+                      Get Started
+                    </Button>
+                  </Link>
+                </ButtonGroup>
               </div>
             </div>
           </DisclosurePanel>
