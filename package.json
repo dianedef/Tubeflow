@@ -2,7 +2,7 @@
   "name": "convex-monorepo",
   "private": true,
   "scripts": {
-    "dev": "turbo run dev --filter=!@packages/backend",
+    "dev": "turbo run dev --filter=web-app",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules",

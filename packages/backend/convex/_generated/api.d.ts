@@ -11,6 +11,7 @@
 import type * as channels from "../channels.js";
 import type * as comments from "../comments.js";
 import type * as likes from "../likes.js";
+import type * as notes from "../notes.js";
 import type * as openai from "../openai.js";
 import type * as utils from "../utils.js";
 import type * as videos from "../videos.js";
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   channels: typeof channels;
   comments: typeof comments;
   likes: typeof likes;
+  notes: typeof notes;
   openai: typeof openai;
   utils: typeof utils;
   videos: typeof videos;
