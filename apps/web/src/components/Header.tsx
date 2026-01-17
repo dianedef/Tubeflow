@@ -1,6 +1,10 @@
 "use client";
 
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "./common/Logo";
 import Link from "next/link";
@@ -57,6 +61,14 @@ export default function Header() {
                 )}
                 {user ? (
                   <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <Link href="/videos">
+                      <button
+                        type="button"
+                        className=" text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px]"
+                      >
+                        Videos
+                      </button>
+                    </Link>
                     <Link href="/notes">
                       <button
                         type="button"

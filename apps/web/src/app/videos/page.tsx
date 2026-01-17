@@ -1,158 +1,153 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@packages/backend/convex/_generated/api";
-import { Id } from "@packages/backend/convex/_generated/dataModel";
+import Header from "@/components/Header";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-interface YouTubeVideo {
+interface Video {
   id: string;
   title: string;
   description: string;
   thumbnailUrl: string;
   channelTitle: string;
   publishedAt: string;
+  duration: string;
+  views: string;
 }
 
-interface Playlist {
-  _id: Id<"playlists">;
- number;
-}
+const sampleVideos: Video[] = [
+  {
+    id: "1",
+    title: "Comment créer une startup tech en 2025 ?",
+    description:
+      "Les étapes clés pour lancer votre propre startup tech. De l'idée au financement, découvrez les meilleures pratiques.",
+    thumbnailUrl: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+    channelTitle: "Alberta Tech",
+    publishedAt: "2024-12-15",
+    duration: "12:34",
+    views: "45K",
+  },
+  {
+    id: "2",
+    title: "Les frameworks React à connaître en 2025",
+    description:
+      "Tour d'horizon des frameworks React les plus populaires et quand les utiliser dans vos projets.",
+    thumbnailUrl: "https://img.youtube.com/vi/LXb3EKWsInQ/maxresdefault.jpg",
+    channelTitle: "Alberta Tech",
+    publishedAt: "2024-12-10",
+    duration: "18:22",
+    views: "32K",
+  },
+  {
+    id: "3",
+    title: "Guide complet: TypeScript vs JavaScript",
+    description:
+      "Pourquoi TypeScript gagne en popularité et comment migrer vos projets JavaScript.",
+    thumbnailUrl: "https://img.youtube.com/vi/ahCwqrYpIuM/maxresdefault.jpg",
+    channelTitle: "Alberta Tech",
+    publishedAt: "2024-12-05",
+    duration: "15:45",
+    views: "28K",
+  },
+  {
+    id: "4",
+    title: "Architecture microservices avec Node.js",
+    description:
+      "Comment structurer une application microservices scalable avec Node.js et Docker.",
+    thumbnailUrl: "https://img.youtube.com/vi/k8a5JH-1y8Y/maxresdefault.jpg",
+    channelTitle: "Alberta Tech",
+    publishedAt: "2024-11-28",
+    duration: "22:10",
+    views: "21K",
+  },
+  {
+    id: "5",
+    title: "Les bases de l'IA générative pour développeurs",
+    description:
+      "Comprendre comment utiliser les API d'OpenAI et Claude dans vos applications.",
+    thumbnailUrl: "https://img.youtube.com/vi/2kT3Z7m3V1c/maxresdefault.jpg",
+    channelTitle: "Alberta Tech",
+    publishedAt: "2024-11-20",
+    duration: "16:33",
+    views: "35K",
+  },
+  {
+    id: "6",
+    title: "Déploiement CI/CD avec GitHub Actions",
+    description:
+      "Automatisez vos déploiements avec GitHub Actions. Tutoriel complet pour débutants et avancés.",
+    thumbnailUrl: "https://img.youtube.com/vi/nJ7eG9K9D5E/maxresdefault.jpg",
+    channelTitle: "Alberta Tech",
+    publishedAt: "2024-11-12",
+    duration: "19:58",
+    views: "18K",
+  },
+];
 
 export default function VideosPage() {
-  const [selectedPlaylist, setSelectedPlaylist] = useState<Id<"playlists"> | null>(null);
-  const [newPlaylistName, setNewPlaylistName] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Use the functions from the videos module
-  const youtubeVideos = useQuery(api.videos.getYouTubeFeed) as YouTubeVideo[] | undefined;
-  const playlists = useQuery(api.videos.getPlaylists) as Playlist[] | undefined;
-  const createPlaylist = useMutation(api.videos.createPlaylist);
-  const addToPlaylist = useMutation(api.videos.addVideoToPlaylist);
-
-  useEffect(() => {
-    if (youtubeVideos !== undefined) {
-      setIsLoading(false);
-    }
-  }, [youtubeVideos]);
-
-  const handleCreatePlaylist = async () => {
-    if (!newPlaylistName.trim()) return;
-    try {
-      await createPlaylist({ name: newPlaylistName.trim() });
-      setNewPlaylistName("");
-    } catch (error) {
-      console.error("Failed to create playlist:", error);
-    }
-  };
-
-  const handleAddToPlaylist = async (videoId: string, playlistId: string) => {
-    try {
-      await addToPlaylist({ playlistId, videoId });
-    } catch (error) {
-      console.error("Failed to add video to playlist:", error);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">YouTube Feed</h1>
-          
-          {/* Playlist Management */}
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Playlists</h2>
-            <div className="flex gap-3 mb-4">
-              <input
-                type="text"
-                value={newPlaylistName}
-                onChange={(e) => setNewPlaylistName(e.target.value)}
-                placeholder="New playlist name"
-                className="flex-1 p-2 border rounded-lg"
-              />
-              <button
-                onClick={handleCreatePlaylist}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                Create Playlist
-              </button>
-            </div>
-            
-            <div className="flex gap-2 flex-wrap">
-              {playlists?.map((playlist) => (
-                <button
-                  key={playlist._id}
-                  onClick={() => setSelectedPlaylist(
-                    selectedPlaylist === playlist._id ? null : playlist._id
-                  )}
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    selectedPlaylist === playlist._id
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                >
-                  {playlist.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="text-center py-12">
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-            <p className="text-gray-600 mt-4">Loading YouTube feed...</p>
-          </div>
-        ) : youtubeVideos && youtubeVideos.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">No videos found</p>
-            <p className="text-sm text-gray-500 mt-2">
-              Try adding a channel ID or check your YouTube API configuration
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {youtubeVideos?.map((video) => (
-              <div
-                key={video.id}
-                className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
-              >
-                <div className="aspect-video bg-gray-200">
-                  <img 
-                    src={video.thumbnailUrl} 
-                    alt={video.title} 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
-                    {video.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                    {video.description}
-                  </p>
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                    <span>{video.channelTitle}</span>
-                    <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
-                  </div>
-                  
-                  {selectedPlaylist && (
-                    <button
-                      onClick={() => handleAddToPlaylist(video.id, selectedPlaylist)}
-                      className="w-full px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition"
+    <main className="bg-[#EDEDED] min-h-screen">
+      <Header />
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Vidéos</h1>
+        <div className="space-y-4">
+          {sampleVideos.map((video) => (
+            <Card
+              key={video.id}
+              className="group cursor-pointer transition-all hover:shadow-md focus-within:ring-2 focus-within:ring-primary"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  console.log("Video clicked:", video.id);
+                }
+              }}
+            >
+              <CardContent className="p-0">
+                <div className="flex gap-4 p-4">
+                  <div className="relative shrink-0 w-64 aspect-video rounded-md overflow-hidden bg-muted">
+                    <img
+                      src={video.thumbnailUrl}
+                      alt={video.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <Badge
+                      variant="default"
+                      className="absolute bottom-2 right-2 bg-black/80 hover:bg-black/90 border-none"
                     >
-                      Add to Playlist
-                    </button>
-                  )}
+                      {video.duration}
+                    </Badge>
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                      {video.description}
+                    </p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mb-1">
+                      <span>{video.views} vues</span>
+                      <span>•</span>
+                      <span>
+                        {new Date(video.publishedAt).toLocaleDateString(
+                          "fr-FR",
+                        )}
+                      </span>
+                      <span>•</span>
+                      <span>{video.duration}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {video.channelTitle}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+                <div className="px-4 pb-4 pt-0">
+                  <h2 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                    {video.title}
+                  </h2>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
