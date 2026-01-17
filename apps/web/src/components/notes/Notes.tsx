@@ -93,10 +93,10 @@ const Notes = () => {
     allVideos && allVideos.length > 0 ? allVideos : sampleNotes;
 
   const finalVideos = search
-    ? videosData?.filter(
+    ? (videosData || []).filter(
         (video: { title: string; description: string }) =>
-          video.title.toLowerCase().includes(search.toLowerCase()) ||
-          video.description.toLowerCase().includes(search.toLowerCase()),
+          video.title?.toLowerCase().includes(search.toLowerCase()) ||
+          video.description?.toLowerCase().includes(search.toLowerCase()),
       )
     : videosData;
 

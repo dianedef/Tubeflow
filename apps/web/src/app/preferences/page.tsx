@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -107,7 +108,9 @@ export default function PreferencesPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-4">Preferences</h1>
-        <p className="text-muted-foreground">Please sign in to access preferences.</p>
+        <p className="text-muted-foreground">
+          Please sign in to access preferences.
+        </p>
       </div>
     );
   }
@@ -133,7 +136,7 @@ export default function PreferencesPage() {
 
   const handleNotificationToggle = async (
     key: "email" | "push" | "newComments" | "newLikes",
-    value: boolean
+    value: boolean,
   ) => {
     setIsSaving(true);
     try {
@@ -156,7 +159,7 @@ export default function PreferencesPage() {
 
   const handlePlaybackChange = async (
     key: "autoplay" | "defaultQuality" | "defaultSpeed",
-    value: boolean | string | number
+    value: boolean | string | number,
   ) => {
     setIsSaving(true);
     try {
@@ -178,7 +181,7 @@ export default function PreferencesPage() {
 
   const handleNotesChange = async (
     key: "defaultTimestamped" | "sortOrder",
-    value: boolean | "asc" | "desc"
+    value: boolean | "asc" | "desc",
   ) => {
     setIsSaving(true);
     try {
@@ -448,9 +451,7 @@ export default function PreferencesPage() {
               <Play className="h-5 w-5" />
               Playback
             </CardTitle>
-            <CardDescription>
-              Configure video playback settings
-            </CardDescription>
+            <CardDescription>Configure video playback settings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -536,9 +537,7 @@ export default function PreferencesPage() {
               <FileText className="h-5 w-5" />
               Notes
             </CardTitle>
-            <CardDescription>
-              Configure note-taking preferences
-            </CardDescription>
+            <CardDescription>Configure note-taking preferences</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -578,13 +577,16 @@ export default function PreferencesPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="asc">Ascending (oldest first)</SelectItem>
-                  <SelectItem value="desc">Descending (newest first)</SelectItem>
+                  <SelectItem value="desc">
+                    Descending (newest first)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardContent>
         </Card>
       </div>
+      <Header />
     </div>
   );
 }
