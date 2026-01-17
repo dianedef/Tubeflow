@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -11,6 +12,7 @@ import Link from "next/link";
 import { useUser } from "@clerk/clerk-react";
 import { UserNav } from "./common/UserNav";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type NavigationItem = {
   name: string;
@@ -26,12 +28,32 @@ const navigation: NavigationItem[] = [
 export default function Header() {
   const { user } = useUser();
   const pathname = usePathname();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <Disclosure as="nav" className=" ">
+    <Disclosure
+      as="nav"
+      className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 ${isVisible ? "translate-y-0" : "translate-y-full"}`}
+    >
       {({ open }) => (
         <>
-          <div className="flex items-center bg-white h-16 sm:h-20">
+          <div className="flex items-center bg-background h-16 sm:h-20 border-t border-gray-200">
             <div className="container px-2 sm:px-0">
               <div className="relative flex h-16 items-center justify-between">
                 <div className="flex sm:hidden shrink-0 items-center">
@@ -48,7 +70,7 @@ export default function Header() {
                           <li key={item.name}>
                             <Link
                               href={item.href}
-                              className="text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal]"
+                              className="text-foreground text-center text-xl not-italic font-normal leading-[normal]"
                               aria-current={item.current ? "page" : undefined}
                             >
                               {item.name}
@@ -64,7 +86,7 @@ export default function Header() {
                     <Link href="/videos">
                       <button
                         type="button"
-                        className=" text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px]"
+                        className=" text-foreground text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px]"
                       >
                         Videos
                       </button>
@@ -77,6 +99,7 @@ export default function Header() {
                         See your Notes
                       </button>
                     </Link>
+                    <ThemeToggle />
                     <UserNav
                       image={user?.imageUrl}
                       name={user?.fullName!}
@@ -87,7 +110,7 @@ export default function Header() {
                   <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <Link
                       href="/notes"
-                      className="border rounded-lg border-solid border-[#2D2D2D] text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-2.5"
+                      className="border rounded-lg border-solid border-foreground text-foreground text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-2.5"
                     >
                       Sign in
                     </Link>
@@ -115,23 +138,24 @@ export default function Header() {
             </div>
           </div>
 
-          <DisclosurePanel className="sm:hidden">
+          <DisclosurePanel className="sm:hidden bg-background border-t border-gray-200">
             <div className="space-y-1 px-2 pb-3 pt-2 flex flex-col gap-3 items-start">
               {navigation.map((item) => (
                 <DisclosureButton
                   key={item.name}
                   as={Link}
                   href={item.href}
-                  className="text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal]"
+                  className="text-foreground text-center text-xl not-italic font-normal leading-[normal]"
                   aria-current={item.current ? "page" : undefined}
                 >
                   {item.name}
                 </DisclosureButton>
               ))}
               <div className="flex gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <ThemeToggle />
                 <Link
                   href="/notes"
-                  className="border rounded-lg border-solid border-[#2D2D2D] text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-[5px]"
+                  className="border rounded-lg border-solid border-foreground text-foreground text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-[5px]"
                 >
                   Sign in
                 </Link>

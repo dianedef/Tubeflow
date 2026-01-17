@@ -23,7 +23,7 @@ const Hero = () => {
           </div>
           <div className="max-w-[570px] w-full h-full">
             <div className="relative max-w-[570px] w-full h-[380px] sm:h-[680px]">
-              <div className="absolute z-10 inset-0 flex justify-center items-center bg-[#0983DF99] opacity-40 blur-[102px] rounded-[673px]">
+              <div className="absolute z-10 inset-0 flex justify-center items-center bg-primary/60 opacity-40 blur-[102px] rounded-[673px]">
                 <Image
                   src={"/images/hero_image_bg.svg"}
                   width={541}

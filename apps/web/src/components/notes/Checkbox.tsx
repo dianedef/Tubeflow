@@ -16,19 +16,19 @@ const Checkbox = ({
           type="checkbox"
           checked={isChecked}
           onChange={checkHandler}
-          className="accent-white checked:accent-white w-5 h-5 focus:ring-0 focus:outline-0  border-[#0D87E1] rounded-[6px] bg-[#F9F5FF]"
+          className="accent-primary checked:accent-primary w-5 h-5 focus:ring-0 focus:outline-0  border-primary rounded-[6px] bg-muted"
           disabled={!openaiKeySet}
         />
       </div>
       <div className="">
         <label
           htmlFor="candidates"
-          className=" text-black text-[17px] sm:text-2xl pb-2 not-italic font-light leading-[90.3%] tracking-[-0.6px]"
+          className=" text-foreground text-[17px] sm:text-2xl pb-2 not-italic font-light leading-[90.3%] tracking-[-0.6px]"
         >
           Advanced Summarization {openaiKeySet ? "" : " (Disabled)"}
         </label>
         {openaiKeySet ? (
-          <p className=" text-black text-sm sm:text-[17px] not-italic font-extralight leading-[90.3%] tracking-[-0.425px]">
+          <p className=" text-foreground text-sm sm:text-[17px] not-italic font-extralight leading-[90.3%] tracking-[-0.425px]">
             Check this box if you want to generate summaries using AI
           </p>
         ) : (

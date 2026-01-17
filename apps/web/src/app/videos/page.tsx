@@ -86,10 +86,9 @@ const sampleVideos: Video[] = [
 
 export default function VideosPage() {
   return (
-    <main className="bg-[#EDEDED] min-h-screen">
+    <main className="bg-background min-h-screen">
       <Header />
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Vidéos</h1>
         <div className="space-y-4">
           {sampleVideos.map((video) => (
             <Card
@@ -111,12 +110,6 @@ export default function VideosPage() {
                       alt={video.title}
                       className="w-full h-full object-cover"
                     />
-                    <Badge
-                      variant="default"
-                      className="absolute bottom-2 right-2 bg-black/80 hover:bg-black/90 border-none"
-                    >
-                      {video.duration}
-                    </Badge>
                   </div>
                   <div className="flex-1 flex flex-col justify-center">
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-2">

@@ -9,7 +9,7 @@ export default async function Page({
 }) {
   const { slug } = await params;
   return (
-    <main className="bg-[#F5F7FE] h-screen">
+    <main className="bg-background h-screen">
       <Header />
       <NoteDetails noteId={slug as Id<"videos">} />
     </main>
