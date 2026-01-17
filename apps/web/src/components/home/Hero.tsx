@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   return (
-    <section className="bg-gradient-to-b from-transparent via-white via-[#d2e4f2] to-transparent bg-[length:261px_261px] bg-[image:linear-gradient(181deg,rgba(255,255,255,0)_57.92%,#fff_97.09%,rgba(255,255,255,0)_127.09%),url('/images/background.png')]">
+    <section className="bg-gradient-to-b from-transparent via-background via-[#d2e4f2] to-transparent bg-[length:261px_261px] bg-[image:linear-gradient(181deg,rgba(255,255,255,0)_57.92%,#fff_97.09%,rgba(255,255,255,0)_127.09%),url('/images/background.png')]">
       <div className="container py-16 sm:py-36 px-6 sm:px-0">
         <div className="flex sm:flex-wrap flex-nowrap justify-between items-center max-h-[690px] h-full">
           <div>

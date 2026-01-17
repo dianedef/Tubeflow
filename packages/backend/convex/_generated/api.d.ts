@@ -10,9 +10,14 @@
 
 import type * as channels from "../channels.js";
 import type * as comments from "../comments.js";
+import type * as http from "../http.js";
 import type * as likes from "../likes.js";
 import type * as notes from "../notes.js";
 import type * as openai from "../openai.js";
+import type * as playlists from "../playlists.js";
+import type * as settings from "../settings.js";
+import type * as subscriptions from "../subscriptions.js";
+import type * as users from "../users.js";
 import type * as utils from "../utils.js";
 import type * as videos from "../videos.js";
 
@@ -25,9 +30,14 @@ import type {
 declare const fullApi: ApiFromModules<{
   channels: typeof channels;
   comments: typeof comments;
+  http: typeof http;
   likes: typeof likes;
   notes: typeof notes;
   openai: typeof openai;
+  playlists: typeof playlists;
+  settings: typeof settings;
+  subscriptions: typeof subscriptions;
+  users: typeof users;
   utils: typeof utils;
   videos: typeof videos;
 }>;

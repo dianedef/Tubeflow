@@ -34,7 +34,7 @@ const Testimonials = () => {
   return (
     <section
       id="reviews"
-      className="bg-gradient-to-b from-transparent via-white via-[#d2e4f2] to-transparent bg-[length:261px_261px] bg-[image:linear-gradient(181deg,rgba(255,255,255,0)_57.92%,#fff_97.09%,rgba(255,255,255,0)_127.09%),url('/images/background.png')] relative overflow-hidden"
+      className="bg-gradient-to-b from-transparent via-background via-[#d2e4f2] to-transparent bg-[length:261px_261px] bg-[image:linear-gradient(181deg,rgba(255,255,255,0)_57.92%,#fff_97.09%,rgba(255,255,255,0)_127.09%),url('/images/background.png')] relative overflow-hidden"
     >
       <Image
         src={"/images/blue-circle-right.svg"}

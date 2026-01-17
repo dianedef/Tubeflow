@@ -13,7 +13,7 @@ const TestTimonialCard = ({ data }: Props) => {
   return (
     <div
       className={`max-w-[370px] w-full space-y-8 h-auto shrink-0 rounded-[20px] border-[1.5px] border-solid px-[35px] pt-14 pb-20 ${
-        data.feature ? "bg-primary border-white" : "bg-white border-gray-200"
+        data.feature ? "bg-primary border-primary" : "bg-card border-border"
       }`}
     >
       <div className="flex gap-2">
@@ -31,7 +31,7 @@ const TestTimonialCard = ({ data }: Props) => {
       </div>
       <blockquote
         className={`text-lg not-italic font-normal leading-[26px] font-montserrat ${
-          data.feature ? "text-white" : "text-gray-800"
+          data.feature ? "text-primary-foreground" : "text-foreground"
         }`}
       >
         <span className="text-lg">&ldquo;</span>
@@ -39,7 +39,7 @@ const TestTimonialCard = ({ data }: Props) => {
         <span className="text-lg">&rdquo;</span>
       </blockquote>
       <div className="flex gap-7 items-center">
-        <div className="w-[52px] h-[52px] shrink-0 border rounded-full flex items-center justify-center border-gray-300">
+        <div className="w-[52px] h-[52px] shrink-0 border rounded-full flex items-center justify-center border-border">
           <Image
             className="rounded-[38px] w-[38px] h-[38px]"
             src={data.profile}
@@ -51,14 +51,14 @@ const TestTimonialCard = ({ data }: Props) => {
         <div>
           <h3
             className={`text-xl not-italic font-medium leading-[normal] font-montserrat ${
-              data.feature ? "text-white" : "text-gray-900"
+              data.feature ? "text-primary-foreground" : "text-foreground"
             }`}
           >
             {data.name}
           </h3>
           <p
             className={`text-base not-italic font-medium leading-[normal] font-montserrat ${
-              data.feature ? "text-white" : "text-gray-600"
+              data.feature ? "text-primary-foreground" : "text-muted-foreground"
             }`}
           >
             {data.designation}

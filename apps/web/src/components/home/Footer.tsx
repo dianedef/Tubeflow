@@ -29,16 +29,16 @@ const Footer = () => {
           <Logo />
           <Menu menuItems={menuItems} />
         </div>
-        <div className="pt-8 border-t border-solid border-gray-400">
-          <h3 className="text-gray-900 text-xl not-italic font-semibold leading-[30px] font-montserrat pb-2">
+        <div className="pt-8 border-t border-solid border-border">
+          <h3 className="text-foreground text-xl not-italic font-semibold leading-[30px] font-montserrat pb-2">
             Take more efficient notes with UseNotes
           </h3>
           <div className="flex justify-between">
-            <p className="text-gray-600 font-montserrat text-base not-italic font-normal leading-6">
+            <p className="text-muted-foreground font-montserrat text-base not-italic font-normal leading-6">
               Save countless hours of note-taking and organize your notes
               easier.
             </p>
-            <p className="text-gray-600 font-inter text-base not-italic font-normal leading-6">
+            <p className="text-muted-foreground font-inter text-base not-italic font-normal leading-6">
               © 2023 UseNotes. All rights reserved.
             </p>
           </div>
@@ -49,10 +49,10 @@ const Footer = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-6">
             <Logo />
-            <h3 className="text-gray-900 text-base not-italic font-semibold leading-[18px] font-montserrat">
+            <h3 className="text-foreground text-base not-italic font-semibold leading-[18px] font-montserrat">
               Take more efficient notes with UseNotes
             </h3>
-            <p className="text-gray-900 font-montserrat text-base not-italic font-light leading-[18px]">
+            <p className="text-foreground font-montserrat text-base not-italic font-light leading-[18px]">
               Save countless hours of note-taking and organize your notes
               easier.
             </p>
@@ -61,7 +61,7 @@ const Footer = () => {
             <Menu menuItems={menuItems} />
           </div>
         </div>
-        <p className="text-gray-500 font-inter text-center text-base not-italic font-light leading-[18px] py-11">
+        <p className="text-muted-foreground font-inter text-center text-base not-italic font-light leading-[18px] py-11">
           © 2023 UseNotes. All rights reserved. <br />
           <span className="mt-1"> Icons by Icons8</span>
         </p>

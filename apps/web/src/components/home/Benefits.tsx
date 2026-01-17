@@ -63,7 +63,7 @@ const Benefits = () => {
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="flex gap-2 sm:gap-7 bg-background items-center border rounded-[17px] py-4 px-2 sm:py-12 sm:px-6 border-solid border-gray-300 shadow-xl"
+                className="flex gap-2 sm:gap-7 bg-background items-center border rounded-[17px] py-4 px-2 sm:py-12 sm:px-6 border-solid border-border shadow-xl"
               >
                 <div className="min-w-16 sm:min-w-28">
                   <Image

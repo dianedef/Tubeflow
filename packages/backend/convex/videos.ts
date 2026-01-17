@@ -8,7 +8,7 @@ export const getYouTubeFeed = query({
   handler: async (ctx) => {
     const userId = await getUserId(ctx);
     if (!userId) return [];
-    
+
     // In a real implementation, this would fetch from YouTube API
     // For now, return mock data
     return [
@@ -18,7 +18,7 @@ export const getYouTubeFeed = query({
         description: "This is a sample video description",
         thumbnailUrl: "https://via.placeholder.com/300x200",
         channelTitle: "Sample Channel",
-        publishedAt: new Date().toISOString()
+        publishedAt: new Date().toISOString(),
       },
       {
         id: "2",
@@ -26,66 +26,13 @@ export const getYouTubeFeed = query({
         description: "Another sample video description",
         thumbnailUrl: "https://via.placeholder.com/300x200",
         channelTitle: "Another Channel",
-        publishedAt: new Date().toISOString()
-      }
+        publishedAt: new Date().toISOString(),
+      },
     ];
   },
 });
 
-// Playlist functions
-export const getPlaylists = query({
-  args: {},
-  handler: async (ctx) => {
-    const userId = await getUserId(ctx);
-    if (!userId) return [];
-    
-    return await ctx.db
-      .query("playlists")
-      .filter((q) => q.eq(q.field("userId"), userId))
-      .collect();
-  },
-});
-
-export const createPlaylist = mutation({
-  args: {
-    name: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const userId = await getUserId(ctx);
-    if (!userId) throw new Error("Unauthorized");
-
-    return await ctx.db.insert("playlists", {
-      userId,
-      name: args.name,
-      videoIds: [],
-      createdAt: Date.now(),
-    });
-  },
-});
-
-export const addVideoToPlaylist = mutation({
-  args: {
-    playlistId: v.id("playlists"),
-    videoId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const userId = await getUserId(ctx);
-    const playlist = await ctx.db.get(args.playlistId);
-    
-    if (!playlist || playlist.userId !== userId) {
-      throw new Error("Unauthorized");
-    }
-
-    // Add video ID if not already in playlist
-    if (!playlist.videoIds.includes(args.videoId)) {
-      await ctx.db.patch(args.playlistId, {
-        videoIds: [...playlist.videoIds, args.videoId]
-      });
-    }
-  },
-});
-
-// Keep existing video functions for compatibility
+// Get all videos for the current user
 export const getVideos = query({
   args: {},
   handler: async (ctx) => {
@@ -93,7 +40,7 @@ export const getVideos = query({
     if (!userId) return [];
     return await ctx.db
       .query("videos")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
       .collect();
   },
 });

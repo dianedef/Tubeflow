@@ -32,19 +32,6 @@ export default function CreateNote() {
 
   return (
     <>
-      <div className="flex justify-center items-center">
-        <Button
-          variant="primary"
-          onClick={() => setOpen(true)}
-          className="flex gap-4 justify-center items-center text-center px-8 sm:px-16 py-2 sm:text-3xl"
-        >
-          <Plus className="sm:w-10 sm:h-10 w-6 h-6" />
-          <span className="text-[17px] sm:text-3xl not-italic font-medium leading-[79%] tracking-[-0.75px]">
-            Upload Video
-          </span>
-        </Button>
-      </div>
-
       <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"
@@ -83,7 +70,7 @@ export default function CreateNote() {
                           as="h3"
                           className="text-center text-xl sm:text-left sm:text-[35px] pb-6 sm:pb-8 not-italic font-semibold leading-[90.3%] tracking-[-0.875px]"
                         >
-                          Upload New Video
+                          Create Note
                         </Dialog.Title>
                         <div className="mt-2 space-y-3">
                           <div className="pb-2">
