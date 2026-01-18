@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { Play, Pause } from "lucide-react";
 import { IconButton } from "@/components/ui/icon-button";
+import { Progress } from "@/components/ui/progress";
 
 interface OnProgressProps {
   played: number;
@@ -65,12 +66,7 @@ export default function VideoPlayer({ url, onTimeUpdate }: VideoPlayerProps) {
             <Play className="h-5 w-5" />
           )}
         </IconButton>
-        <div className="flex-1 bg-muted rounded-full h-2">
-          <div
-            className="bg-primary h-2 rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        <Progress value={progress} className="flex-1" />
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import ComplexToggle from "./home/ComplexToggle";
 
 export default function Header() {
   const { user } = useUser();
@@ -30,6 +31,7 @@ export default function Header() {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isLandscape, setIsLandscape] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,6 +109,13 @@ export default function Header() {
                                 <Link href="/account-settings">
                                   Account Settings
                                 </Link>
+                              </MenubarItem>
+                              <MenubarSeparator />
+                              <MenubarItem asChild>
+                                <ComplexToggle
+                                  isSummary={isLandscape}
+                                  setIsSummary={setIsLandscape}
+                                />
                               </MenubarItem>
                               <MenubarSeparator />
                               <MenubarItem>Help & Support</MenubarItem>
@@ -233,6 +242,13 @@ export default function Header() {
                     </MenubarItem>
                     <MenubarItem>
                       <Link href="/account-settings">Account Settings</Link>
+                    </MenubarItem>
+                    <MenubarSeparator />
+                    <MenubarItem asChild>
+                      <ComplexToggle
+                        isSummary={isLandscape}
+                        setIsSummary={setIsLandscape}
+                      />
                     </MenubarItem>
                     <MenubarSeparator />
                     <MenubarItem>Help & Support</MenubarItem>
