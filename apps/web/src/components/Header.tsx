@@ -105,11 +105,6 @@ export default function Header() {
                               <MenubarItem>
                                 <Link href="/preferences">Preferences</Link>
                               </MenubarItem>
-                              <MenubarItem>
-                                <Link href="/account-settings">
-                                  Account Settings
-                                </Link>
-                              </MenubarItem>
                               <MenubarSeparator />
                               <MenubarItem asChild>
                                 <ComplexToggle
@@ -239,9 +234,6 @@ export default function Header() {
                   <MenubarContent>
                     <MenubarItem>
                       <Link href="/preferences">Preferences</Link>
-                    </MenubarItem>
-                    <MenubarItem>
-                      <Link href="/account-settings">Account Settings</Link>
                     </MenubarItem>
                     <MenubarSeparator />
                     <MenubarItem asChild>

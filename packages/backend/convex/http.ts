@@ -156,6 +156,18 @@ http.route({
       console.log(`Subscription canceled: ${subscription.id}`);
     }
 
+    if (eventType === "subscription.uncanceled") {
+      const subscription = evt.data;
+
+      await ctx.runMutation(internal.subscriptions.updateSubscriptionStatus, {
+        polarSubscriptionId: subscription.id,
+        status: "active",
+        cancelAtPeriodEnd: false,
+      });
+
+      console.log(`Subscription uncanceled (reactivated): ${subscription.id}`);
+    }
+
     if (eventType === "subscription.revoked") {
       const subscription = evt.data;
 

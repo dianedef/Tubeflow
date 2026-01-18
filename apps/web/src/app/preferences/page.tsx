@@ -94,7 +94,7 @@ export default function PreferencesPage() {
     setMounted(true);
   }, []);
 
-  if (!mounted || !isUserLoaded || !settings) {
+  if (!mounted || !isUserLoaded) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center min-h-[50vh]">
@@ -114,6 +114,27 @@ export default function PreferencesPage() {
       </div>
     );
   }
+
+  // Use default settings if not loaded yet
+  const currentSettings = settings || {
+    theme: "system" as const,
+    language: "en",
+    notifications: {
+      email: true,
+      push: true,
+      newComments: true,
+      newLikes: false,
+    },
+    playback: {
+      autoplay: true,
+      defaultQuality: "auto",
+      defaultSpeed: 1,
+    },
+    notes: {
+      defaultTimestamped: true,
+      sortOrder: "asc" as const,
+    },
+  };
 
   const handleThemeChange = async (newTheme: "light" | "dark" | "system") => {
     setIsSaving(true);
@@ -140,7 +161,7 @@ export default function PreferencesPage() {
   ) => {
     setIsSaving(true);
     try {
-      const currentNotifications = settings.notifications ?? {
+      const currentNotifications = currentSettings.notifications ?? {
         email: true,
         push: true,
         newComments: true,
@@ -163,7 +184,7 @@ export default function PreferencesPage() {
   ) => {
     setIsSaving(true);
     try {
-      const currentPlayback = settings.playback ?? {
+      const currentPlayback = currentSettings.playback ?? {
         autoplay: true,
         defaultQuality: "auto",
         defaultSpeed: 1,
@@ -185,7 +206,7 @@ export default function PreferencesPage() {
   ) => {
     setIsSaving(true);
     try {
-      const currentNotes = settings.notes ?? {
+      const currentNotes = currentSettings.notes ?? {
         defaultTimestamped: true,
         sortOrder: "asc" as const,
       };
@@ -341,7 +362,7 @@ export default function PreferencesPage() {
             <div className="space-y-3">
               <Label>Language</Label>
               <Select
-                value={settings.language ?? "en"}
+                value={currentSettings.language ?? "en"}
                 onValueChange={handleLanguageChange}
                 disabled={isSaving}
               >
@@ -380,7 +401,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Switch
-                checked={settings.notifications?.email ?? true}
+                checked={currentSettings.notifications?.email ?? true}
                 onCheckedChange={(checked) =>
                   handleNotificationToggle("email", checked)
                 }
@@ -398,7 +419,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Switch
-                checked={settings.notifications?.push ?? true}
+                checked={currentSettings.notifications?.push ?? true}
                 onCheckedChange={(checked) =>
                   handleNotificationToggle("push", checked)
                 }
@@ -416,7 +437,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Switch
-                checked={settings.notifications?.newComments ?? true}
+                checked={currentSettings.notifications?.newComments ?? true}
                 onCheckedChange={(checked) =>
                   handleNotificationToggle("newComments", checked)
                 }
@@ -434,7 +455,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Switch
-                checked={settings.notifications?.newLikes ?? false}
+                checked={currentSettings.notifications?.newLikes ?? false}
                 onCheckedChange={(checked) =>
                   handleNotificationToggle("newLikes", checked)
                 }
@@ -462,7 +483,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Switch
-                checked={settings.playback?.autoplay ?? true}
+                checked={currentSettings.playback?.autoplay ?? true}
                 onCheckedChange={(checked) =>
                   handlePlaybackChange("autoplay", checked)
                 }
@@ -480,7 +501,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Select
-                value={settings.playback?.defaultQuality ?? "auto"}
+                value={currentSettings.playback?.defaultQuality ?? "auto"}
                 onValueChange={(value) =>
                   handlePlaybackChange("defaultQuality", value)
                 }
@@ -509,7 +530,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Select
-                value={String(settings.playback?.defaultSpeed ?? 1)}
+                value={String(currentSettings.playback?.defaultSpeed ?? 1)}
                 onValueChange={(value) =>
                   handlePlaybackChange("defaultSpeed", parseFloat(value))
                 }
@@ -548,7 +569,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Switch
-                checked={settings.notes?.defaultTimestamped ?? true}
+                checked={currentSettings.notes?.defaultTimestamped ?? true}
                 onCheckedChange={(checked) =>
                   handleNotesChange("defaultTimestamped", checked)
                 }
@@ -566,7 +587,7 @@ export default function PreferencesPage() {
                 </p>
               </div>
               <Select
-                value={settings.notes?.sortOrder ?? "asc"}
+                value={currentSettings.notes?.sortOrder ?? "asc"}
                 onValueChange={(value) =>
                   handleNotesChange("sortOrder", value as "asc" | "desc")
                 }

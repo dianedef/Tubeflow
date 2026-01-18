@@ -1,8 +1,7 @@
 "use client";
 
-import { Trash2, Pin, Edit, Clock, Eye } from "lucide-react";
+import { Trash2, Pin, Edit, Clock } from "lucide-react";
 import SwipeableCard, { SwipeActionConfig } from "../SwipeableCard";
-import Link from "next/link";
 
 interface Note {
   _id: string;
@@ -19,6 +18,7 @@ interface SwipeableNoteCardProps {
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   onClick?: (id: string) => void;
+  badge?: string; // e.g., timestamp "1:23"
 }
 
 export default function SwipeableNoteCard({
@@ -27,6 +27,7 @@ export default function SwipeableNoteCard({
   onEdit,
   onDelete,
   onClick,
+  badge,
 }: SwipeableNoteCardProps) {
   const leadingActions: SwipeActionConfig[] = [
     {
@@ -68,54 +69,51 @@ export default function SwipeableNoteCard({
       trailingActions={trailingActions}
       onClick={() => onClick?.(note._id)}
     >
-      <Link href={`/notes/${note._id}`} className="block w-full">
-        <div className="group w-full backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/15">
-          <div className="flex flex-col sm:flex-row">
-            {note.thumbnailUrl && (
-              <div className="relative sm:w-48 aspect-video sm:aspect-square overflow-hidden">
-                <img
-                  src={note.thumbnailUrl}
-                  alt={note.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              </div>
-            )}
-
-            <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-200">
-                  {note.title}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-                  {note.description}
-                </p>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Eye className="w-3.5 h-3.5" />
-                    <span className="font-semibold text-foreground">
-                      {note.views}
-                    </span>{" "}
-                    vues
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {formattedDate}
-                  </span>
+      <div className="group w-full backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/15 cursor-pointer">
+        <div className="flex flex-col sm:flex-row">
+          {note.thumbnailUrl && (
+            <div className="relative sm:w-48 aspect-video sm:aspect-square overflow-hidden">
+              <img
+                src={note.thumbnailUrl}
+                alt={note.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              {badge && (
+                <div className="absolute bottom-2 right-2 px-2 py-1 rounded-md bg-black/70 backdrop-blur-sm text-white text-xs font-medium flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {badge}
                 </div>
+              )}
+            </div>
+          )}
 
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-red-600" />
-                  <span className="text-xs text-muted-foreground">Note</span>
-                </div>
+          <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-200">
+                {note.title}
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                {note.description}
+              </p>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" />
+                  {formattedDate}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-red-600" />
+                <span className="text-xs text-muted-foreground">Note</span>
               </div>
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </SwipeableCard>
   );
 }

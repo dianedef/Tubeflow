@@ -10,6 +10,11 @@ export default defineSchema({
     avatarUrl: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
+    // YouTube OAuth tokens
+    youtubeAccessToken: v.optional(v.string()),
+    youtubeRefreshToken: v.optional(v.string()),
+    youtubeTokenExpiry: v.optional(v.number()),
+    youtubeConnected: v.optional(v.boolean()),
   }).index("by_clerk_id", ["clerkId"]),
 
   // User settings/preferences
@@ -113,12 +118,51 @@ export default defineSchema({
     .index("by_user_and_video", ["userId", "videoId"]),
 
   notes: defineTable({
-    videoId: v.id("videos"),
+    videoId: v.optional(v.id("videos")), // Convex video ID (legacy/local videos)
+    youtubeVideoId: v.optional(v.string()), // YouTube video ID (new)
     userId: v.string(),
     content: v.string(),
     timestamp: v.optional(v.number()),
     createdAt: v.number(),
   })
     .index("by_video_id", ["videoId"])
-    .index("by_user_and_video", ["userId", "videoId"]),
+    .index("by_user_and_video", ["userId", "videoId"])
+    .index("by_youtube_video", ["youtubeVideoId"])
+    .index("by_user_and_youtube_video", ["userId", "youtubeVideoId"]),
+
+  // YouTube playlists cache - stores user's YouTube playlists
+  youtubePlaylistsCache: defineTable({
+    userId: v.string(),
+    youtubePlaylistId: v.string(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    thumbnailUrl: v.optional(v.string()),
+    videoCount: v.number(),
+    privacyStatus: v.string(), // 'public', 'private', 'unlisted'
+    publishedAt: v.optional(v.string()),
+    cachedAt: v.number(), // Timestamp for TTL
+  })
+    .index("by_user", ["userId"])
+    .index("by_youtube_id", ["youtubePlaylistId"])
+    .index("by_user_and_youtube_id", ["userId", "youtubePlaylistId"]),
+
+  // YouTube videos cache - stores videos from playlists
+  youtubeVideosCache: defineTable({
+    userId: v.string(),
+    youtubePlaylistId: v.string(),
+    youtubeVideoId: v.string(),
+    playlistItemId: v.optional(v.string()), // YouTube playlistItem ID (for deletion)
+    title: v.string(),
+    description: v.optional(v.string()),
+    thumbnailUrl: v.optional(v.string()),
+    channelTitle: v.string(),
+    duration: v.optional(v.string()),
+    position: v.number(),
+    publishedAt: v.optional(v.string()),
+    cachedAt: v.number(),
+  })
+    .index("by_playlist", ["youtubePlaylistId"])
+    .index("by_video", ["youtubeVideoId"])
+    .index("by_user", ["userId"])
+    .index("by_user_and_playlist", ["userId", "youtubePlaylistId"]),
 });
