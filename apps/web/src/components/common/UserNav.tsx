@@ -1,3 +1,5 @@
+"use client";
+
 import { useClerk } from "@clerk/clerk-react";
 import { LogOut, Paintbrush2 } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+import { useTranslation } from "@/i18n";
 
 export function UserNav({
   image,
@@ -22,6 +25,7 @@ export function UserNav({
   email: string;
 }) {
   const { signOut } = useClerk();
+  const { t } = useTranslation();
 
   return (
     <DropdownMenu>
@@ -58,7 +62,7 @@ export function UserNav({
         <Link href="/notes">
           <DropdownMenuItem className="hover:cursor-pointer hover:bg-accent">
             <Paintbrush2 className="mr-2 h-4 w-4 text-foreground" />
-            <span className="text-foreground">Dashboard</span>
+            <span className="text-foreground">{t.common.dashboard}</span>
           </DropdownMenuItem>
         </Link>
         <DropdownMenuItem
@@ -66,7 +70,7 @@ export function UserNav({
           className="hover:cursor-pointer hover:bg-accent"
         >
           <LogOut className="mr-2 h-4 w-4 text-foreground" />
-          <span className="text-foreground">Log out</span>
+          <span className="text-foreground">{t.common.logOut}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

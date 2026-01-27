@@ -2,6 +2,7 @@
 
 import { Trash2, Play, Share2, Edit, Lock, Globe } from "lucide-react";
 import SwipeableCard, { SwipeActionConfig } from "../SwipeableCard";
+import { useTranslation } from "@/i18n";
 
 interface Playlist {
   id: string;
@@ -30,16 +31,18 @@ export default function SwipeablePlaylistCard({
   onDelete,
   onClick,
 }: SwipeablePlaylistCardProps) {
+  const { t, locale } = useTranslation();
+
   const leadingActions: SwipeActionConfig[] = [
     {
       icon: Play,
-      label: "Play All",
+      label: t.common.playAll,
       color: "bg-green-500",
       onClick: () => onPlayAll?.(playlist.id) ?? console.log("Play all", playlist.id),
     },
     {
       icon: Edit,
-      label: "Edit",
+      label: t.common.edit,
       color: "bg-blue-500",
       onClick: () => onEdit?.(playlist.id) ?? console.log("Edit", playlist.id),
     },
@@ -48,21 +51,22 @@ export default function SwipeablePlaylistCard({
   const trailingActions: SwipeActionConfig[] = [
     {
       icon: Share2,
-      label: "Share",
+      label: t.common.share,
       color: "bg-emerald-500",
       onClick: () => onShare?.(playlist.id) ?? console.log("Share", playlist.id),
     },
     {
       icon: Trash2,
-      label: "Delete",
+      label: t.common.delete,
       color: "bg-red-500",
       onClick: () => onDelete?.(playlist.id) ?? console.log("Delete", playlist.id),
       destructive: true,
     },
   ];
 
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const formattedDate = new Date(playlist.createdAt).toLocaleDateString(
-    "fr-FR",
+    dateLocale,
     {
       day: "numeric",
       month: "short",
@@ -76,7 +80,7 @@ export default function SwipeablePlaylistCard({
       trailingActions={trailingActions}
       onClick={() => onClick?.(playlist.id)}
     >
-      <div className="group w-full backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/15">
+      <div className="group w-full backdrop-blur-xl bg-card dark:bg-white/10 border border-border dark:border-white/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 dark:hover:bg-white/15">
         <div className="flex flex-col sm:flex-row">
           <div className="relative sm:w-56 aspect-video overflow-hidden">
             <img
@@ -88,7 +92,7 @@ export default function SwipeablePlaylistCard({
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
               <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs font-medium">
                 <Play className="w-3 h-3" fill="currentColor" />
-                {playlist.videoCount} vidéos
+                {playlist.videoCount} {t.playlistDetail.videosCount}
               </span>
               <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs">
                 {playlist.isPublic ? (
@@ -128,12 +132,12 @@ export default function SwipeablePlaylistCard({
                   }`}
                 />
                 <span className="text-xs text-muted-foreground">
-                  {playlist.isPublic ? "Public" : "Privé"}
+                  {playlist.isPublic ? t.common.public : t.common.private}
                 </span>
               </div>
 
               <span className="text-xs text-muted-foreground">
-                Créée le {formattedDate}
+                {t.playlistDetail.createdOn} {formattedDate}
               </span>
             </div>
           </div>

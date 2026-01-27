@@ -2,6 +2,7 @@
 
 import { Trash2, Pin, Edit, Clock } from "lucide-react";
 import SwipeableCard, { SwipeActionConfig } from "../SwipeableCard";
+import { useTranslation } from "@/i18n";
 
 interface Note {
   _id: string;
@@ -18,7 +19,7 @@ interface SwipeableNoteCardProps {
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   onClick?: (id: string) => void;
-  badge?: string; // e.g., timestamp "1:23"
+  badge?: string;
 }
 
 export default function SwipeableNoteCard({
@@ -29,10 +30,12 @@ export default function SwipeableNoteCard({
   onClick,
   badge,
 }: SwipeableNoteCardProps) {
+  const { t, locale } = useTranslation();
+
   const leadingActions: SwipeActionConfig[] = [
     {
       icon: Pin,
-      label: "Pin",
+      label: t.common.pin,
       color: "bg-amber-500",
       onClick: () => onPin?.(note._id) ?? console.log("Pin", note._id),
     },
@@ -41,21 +44,22 @@ export default function SwipeableNoteCard({
   const trailingActions: SwipeActionConfig[] = [
     {
       icon: Edit,
-      label: "Edit",
+      label: t.common.edit,
       color: "bg-blue-500",
       onClick: () => onEdit?.(note._id) ?? console.log("Edit", note._id),
     },
     {
       icon: Trash2,
-      label: "Delete",
+      label: t.common.delete,
       color: "bg-red-500",
       onClick: () => onDelete?.(note._id) ?? console.log("Delete", note._id),
       destructive: true,
     },
   ];
 
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const formattedDate = new Date(Number(note._creationTime)).toLocaleDateString(
-    "fr-FR",
+    dateLocale,
     {
       day: "numeric",
       month: "short",
@@ -69,7 +73,7 @@ export default function SwipeableNoteCard({
       trailingActions={trailingActions}
       onClick={() => onClick?.(note._id)}
     >
-      <div className="group w-full backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/15 cursor-pointer">
+      <div className="group w-full backdrop-blur-xl bg-card dark:bg-white/10 border border-border dark:border-white/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 dark:hover:bg-white/15 cursor-pointer">
         <div className="flex flex-col sm:flex-row">
           {note.thumbnailUrl && (
             <div className="relative sm:w-48 aspect-video sm:aspect-square overflow-hidden">
@@ -108,7 +112,9 @@ export default function SwipeableNoteCard({
 
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-red-600" />
-                <span className="text-xs text-muted-foreground">Note</span>
+                <span className="text-xs text-muted-foreground">
+                  {t.common.note}
+                </span>
               </div>
             </div>
           </div>

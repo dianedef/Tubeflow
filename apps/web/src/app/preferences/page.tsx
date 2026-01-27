@@ -35,13 +35,15 @@ import {
   CreditCard,
   Loader2,
 } from "lucide-react";
+import { useTranslation } from "@/i18n";
+import type { Locale } from "@/i18n";
 
 const LANGUAGES = [
   { value: "en", label: "English" },
-  { value: "fr", label: "Français" },
-  { value: "es", label: "Español" },
+  { value: "fr", label: "Fran\u00e7ais" },
+  { value: "es", label: "Espa\u00f1ol" },
   { value: "de", label: "Deutsch" },
-  { value: "pt", label: "Português" },
+  { value: "pt", label: "Portugu\u00eas" },
 ];
 
 const PLAYBACK_SPEEDS = [
@@ -65,6 +67,7 @@ const VIDEO_QUALITIES = [
 export default function PreferencesPage() {
   const { user, isLoaded: isUserLoaded } = useUser();
   const { theme, setTheme } = useTheme();
+  const { t, locale, setLocale } = useTranslation();
 
   const settings = useQuery(api.settings.getSettings);
   const subscription = useQuery(api.subscriptions.getSubscription);
@@ -79,7 +82,6 @@ export default function PreferencesPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Ensure user exists in Convex on first load
   useEffect(() => {
     if (isUserLoaded && user) {
       ensureUser({
@@ -107,15 +109,14 @@ export default function PreferencesPage() {
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">Preferences</h1>
+        <h1 className="text-4xl font-bold mb-4">{t.preferencesPage.title}</h1>
         <p className="text-muted-foreground">
-          Please sign in to access preferences.
+          {t.preferencesPage.signInRequired}
         </p>
       </div>
     );
   }
 
-  // Use default settings if not loaded yet
   const currentSettings = settings || {
     theme: "system" as const,
     language: "en",
@@ -149,6 +150,10 @@ export default function PreferencesPage() {
   const handleLanguageChange = async (language: string) => {
     setIsSaving(true);
     try {
+      // Update locale in the i18n system for immediate effect
+      if (language === "en" || language === "fr") {
+        setLocale(language as Locale);
+      }
       await updateLanguage({ language });
     } finally {
       setIsSaving(false);
@@ -230,10 +235,11 @@ export default function PreferencesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Header />
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Preferences</h1>
+        <h1 className="text-4xl font-bold mb-2">{t.preferencesPage.title}</h1>
         <p className="text-muted-foreground">
-          Customize your TubeFlow experience
+          {t.preferencesPage.subtitle}
         </p>
       </div>
 
@@ -243,9 +249,9 @@ export default function PreferencesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Account
+              {t.preferencesPage.accountTitle}
             </CardTitle>
-            <CardDescription>Manage your account information</CardDescription>
+            <CardDescription>{t.preferencesPage.accountDesc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
@@ -271,50 +277,54 @@ export default function PreferencesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="h-5 w-5" />
-              Subscription
+              {t.preferencesPage.subscriptionTitle}
             </CardTitle>
-            <CardDescription>Manage your subscription plan</CardDescription>
+            <CardDescription>{t.preferencesPage.subscriptionDesc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">
-                  Current Plan:{" "}
+                  {t.preferencesPage.currentPlan}{" "}
                   <span className="text-primary capitalize">
                     {subscription?.plan ?? "Free"}
                   </span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Status: {subscription?.status ?? "Active"}
+                  {t.preferencesPage.status} {subscription?.status ?? "Active"}
                 </p>
               </div>
               {subscription?.plan === "free" && (
                 <Button variant="default" onClick={handleUpgrade}>
-                  Upgrade to Pro
+                  {t.preferencesPage.upgradePro}
                 </Button>
               )}
             </div>
             {subscription?.features && (
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  Max Videos:{" "}
+                  {t.preferencesPage.maxVideos}{" "}
                   {subscription.features.maxVideos === -1
-                    ? "Unlimited"
+                    ? t.preferencesPage.unlimited
                     : subscription.features.maxVideos}
                 </div>
                 <div>
-                  Max Playlists:{" "}
+                  {t.preferencesPage.maxPlaylists}{" "}
                   {subscription.features.maxPlaylists === -1
-                    ? "Unlimited"
+                    ? t.preferencesPage.unlimited
                     : subscription.features.maxPlaylists}
                 </div>
                 <div>
-                  AI Summaries:{" "}
-                  {subscription.features.aiSummaries ? "Yes" : "No"}
+                  {t.preferencesPage.aiSummaries}{" "}
+                  {subscription.features.aiSummaries
+                    ? t.common.yes
+                    : t.common.no}
                 </div>
                 <div>
-                  Export Notes:{" "}
-                  {subscription.features.exportNotes ? "Yes" : "No"}
+                  {t.preferencesPage.exportNotes}{" "}
+                  {subscription.features.exportNotes
+                    ? t.common.yes
+                    : t.common.no}
                 </div>
               </div>
             )}
@@ -326,15 +336,15 @@ export default function PreferencesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sun className="h-5 w-5" />
-              Appearance
+              {t.preferencesPage.appearanceTitle}
             </CardTitle>
             <CardDescription>
-              Customize how TubeFlow looks on your device
+              {t.preferencesPage.appearanceDesc}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-3">
-              <Label>Theme</Label>
+              <Label>{t.preferencesPage.theme}</Label>
               <div className="flex gap-2">
                 <Button
                   variant={theme === "light" ? "default" : "outline"}
@@ -343,7 +353,7 @@ export default function PreferencesPage() {
                   disabled={isSaving}
                 >
                   <Sun className="h-4 w-4 mr-2" />
-                  Light
+                  {t.preferencesPage.light}
                 </Button>
                 <Button
                   variant={theme === "dark" ? "default" : "outline"}
@@ -352,7 +362,7 @@ export default function PreferencesPage() {
                   disabled={isSaving}
                 >
                   <Moon className="h-4 w-4 mr-2" />
-                  Dark
+                  {t.preferencesPage.dark}
                 </Button>
                 <Button
                   variant={theme === "system" ? "default" : "outline"}
@@ -361,7 +371,7 @@ export default function PreferencesPage() {
                   disabled={isSaving}
                 >
                   <Monitor className="h-4 w-4 mr-2" />
-                  System
+                  {t.preferencesPage.system}
                 </Button>
               </div>
             </div>
@@ -369,14 +379,14 @@ export default function PreferencesPage() {
             <Separator />
 
             <div className="space-y-3">
-              <Label>Language</Label>
+              <Label>{t.preferencesPage.language}</Label>
               <Select
-                value={currentSettings.language ?? "en"}
+                value={locale}
                 onValueChange={handleLanguageChange}
                 disabled={isSaving}
               >
                 <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select language" />
+                  <SelectValue placeholder={t.preferencesPage.selectLanguage} />
                 </SelectTrigger>
                 <SelectContent>
                   {LANGUAGES.map((lang) => (
@@ -395,18 +405,18 @@ export default function PreferencesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5" />
-              Notifications
+              {t.preferencesPage.notificationsTitle}
             </CardTitle>
             <CardDescription>
-              Choose what notifications you want to receive
+              {t.preferencesPage.notificationsDesc}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Email Notifications</Label>
+                <Label>{t.preferencesPage.emailNotifications}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Receive notifications via email
+                  {t.preferencesPage.emailNotificationsDesc}
                 </p>
               </div>
               <Switch
@@ -422,9 +432,9 @@ export default function PreferencesPage() {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Push Notifications</Label>
+                <Label>{t.preferencesPage.pushNotifications}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Receive push notifications in your browser
+                  {t.preferencesPage.pushNotificationsDesc}
                 </p>
               </div>
               <Switch
@@ -440,9 +450,9 @@ export default function PreferencesPage() {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>New Comments</Label>
+                <Label>{t.preferencesPage.newComments}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Notify when someone comments on your videos
+                  {t.preferencesPage.newCommentsDesc}
                 </p>
               </div>
               <Switch
@@ -458,9 +468,9 @@ export default function PreferencesPage() {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>New Likes</Label>
+                <Label>{t.preferencesPage.newLikes}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Notify when someone likes your videos
+                  {t.preferencesPage.newLikesDesc}
                 </p>
               </div>
               <Switch
@@ -479,16 +489,16 @@ export default function PreferencesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Play className="h-5 w-5" />
-              Playback
+              {t.preferencesPage.playbackTitle}
             </CardTitle>
-            <CardDescription>Configure video playback settings</CardDescription>
+            <CardDescription>{t.preferencesPage.playbackDesc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Autoplay</Label>
+                <Label>{t.preferencesPage.autoplay}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Automatically play videos when you open them
+                  {t.preferencesPage.autoplayDesc}
                 </p>
               </div>
               <Switch
@@ -504,9 +514,9 @@ export default function PreferencesPage() {
 
             <div className="space-y-3">
               <div className="space-y-0.5">
-                <Label>Default Quality</Label>
+                <Label>{t.preferencesPage.defaultQuality}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Preferred video quality when available
+                  {t.preferencesPage.defaultQualityDesc}
                 </p>
               </div>
               <Select
@@ -517,7 +527,7 @@ export default function PreferencesPage() {
                 disabled={isSaving}
               >
                 <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select quality" />
+                  <SelectValue placeholder={t.preferencesPage.selectQuality} />
                 </SelectTrigger>
                 <SelectContent>
                   {VIDEO_QUALITIES.map((quality) => (
@@ -533,9 +543,9 @@ export default function PreferencesPage() {
 
             <div className="space-y-3">
               <div className="space-y-0.5">
-                <Label>Default Playback Speed</Label>
+                <Label>{t.preferencesPage.defaultSpeed}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Default speed for video playback
+                  {t.preferencesPage.defaultSpeedDesc}
                 </p>
               </div>
               <Select
@@ -546,7 +556,7 @@ export default function PreferencesPage() {
                 disabled={isSaving}
               >
                 <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select speed" />
+                  <SelectValue placeholder={t.preferencesPage.selectSpeed} />
                 </SelectTrigger>
                 <SelectContent>
                   {PLAYBACK_SPEEDS.map((speed) => (
@@ -565,16 +575,16 @@ export default function PreferencesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              Notes
+              {t.preferencesPage.notesTitle}
             </CardTitle>
-            <CardDescription>Configure note-taking preferences</CardDescription>
+            <CardDescription>{t.preferencesPage.notesDesc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Auto-timestamp Notes</Label>
+                <Label>{t.preferencesPage.autoTimestamp}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Automatically add video timestamp when creating notes
+                  {t.preferencesPage.autoTimestampDesc}
                 </p>
               </div>
               <Switch
@@ -590,9 +600,9 @@ export default function PreferencesPage() {
 
             <div className="space-y-3">
               <div className="space-y-0.5">
-                <Label>Notes Sort Order</Label>
+                <Label>{t.preferencesPage.sortOrder}</Label>
                 <p className="text-sm text-muted-foreground">
-                  How to sort notes by timestamp
+                  {t.preferencesPage.sortOrderDesc}
                 </p>
               </div>
               <Select
@@ -603,12 +613,14 @@ export default function PreferencesPage() {
                 disabled={isSaving}
               >
                 <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select order" />
+                  <SelectValue placeholder={t.preferencesPage.selectOrder} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="asc">Ascending (oldest first)</SelectItem>
+                  <SelectItem value="asc">
+                    {t.preferencesPage.ascending}
+                  </SelectItem>
                   <SelectItem value="desc">
-                    Descending (newest first)
+                    {t.preferencesPage.descending}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -616,7 +628,6 @@ export default function PreferencesPage() {
           </CardContent>
         </Card>
       </div>
-      <Header />
     </div>
   );
 }

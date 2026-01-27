@@ -12,8 +12,8 @@ interface Props {
 const TestTimonialCard = ({ data }: Props) => {
   return (
     <div
-      className={`max-w-[370px] w-full space-y-8 h-auto shrink-0 rounded-[20px] border-[1.5px] border-solid px-[35px] pt-14 pb-20 ${
-        data.feature ? "bg-primary border-primary" : "bg-gray-900 border-gray-800"
+      className={`max-w-[370px] w-full space-y-8 h-auto shrink-0 rounded-[20px] border-[1.5px] border-solid px-[35px] pt-14 pb-20 transition-all hover:-translate-y-0.5 ${
+        data.feature ? "bg-primary border-primary shadow-xl" : "bg-section-card border-section-card-border shadow-lg hover:shadow-xl"
       }`}
     >
       <div className="flex gap-2">
@@ -31,7 +31,7 @@ const TestTimonialCard = ({ data }: Props) => {
       </div>
       <blockquote
         className={`text-lg not-italic font-normal leading-[26px] font-montserrat ${
-          data.feature ? "text-primary-foreground" : "text-gray-200"
+          data.feature ? "text-primary-foreground" : "text-section-foreground"
         }`}
       >
         <span className="text-lg">&ldquo;</span>
@@ -39,7 +39,7 @@ const TestTimonialCard = ({ data }: Props) => {
         <span className="text-lg">&rdquo;</span>
       </blockquote>
       <div className="flex gap-7 items-center">
-        <div className="w-[52px] h-[52px] shrink-0 border rounded-full flex items-center justify-center border-gray-700">
+        <div className="w-[52px] h-[52px] shrink-0 border rounded-full flex items-center justify-center border-section-card-border">
           <Image
             className="rounded-[38px] w-[38px] h-[38px]"
             src={data.profile}
@@ -51,14 +51,14 @@ const TestTimonialCard = ({ data }: Props) => {
         <div>
           <h3
             className={`text-xl not-italic font-medium leading-[normal] font-montserrat ${
-              data.feature ? "text-primary-foreground" : "text-white"
+              data.feature ? "text-primary-foreground" : "text-section-foreground"
             }`}
           >
             {data.name}
           </h3>
           <p
             className={`text-base not-italic font-medium leading-[normal] font-montserrat ${
-              data.feature ? "text-primary-foreground" : "text-gray-400"
+              data.feature ? "text-primary-foreground" : "text-section-muted"
             }`}
           >
             {data.designation}

@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "@packages/backend/convex/_generated/api";
 import YouTubeConnectPrompt from "./YouTubeConnectPrompt";
 import YouTubeDisconnectButton from "./YouTubeDisconnectButton";
+import { useTranslation } from "@/i18n";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const youtubeApi = (api as any).youtube as Record<string, any> | undefined;
@@ -21,14 +22,14 @@ export default function YouTubeConnectionStatus({
   className = "",
 }: YouTubeConnectionStatusProps) {
   const connectionStatus = useQuery(youtubeApi?.getYoutubeConnectionStatus) as { connected: boolean } | undefined;
+  const { t } = useTranslation();
 
-  // Loading state
   if (connectionStatus === undefined) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
         <RefreshCw className="w-4 h-4 animate-spin text-muted-foreground" />
         <span className="text-sm text-muted-foreground">
-          Vérification de la connexion...
+          {t.youtubeStatus.checkingConnection}
         </span>
       </div>
     );
@@ -43,26 +44,20 @@ export default function YouTubeConnectionStatus({
     return null;
   }
 
-  // Connected state
   return (
-    <div
-      className={`flex items-center gap-3 ${className}`}
-    >
+    <div className={`flex items-center gap-3 ${className}`}>
       <div className="flex items-center gap-2">
         <div className="relative">
           <Youtube className="w-5 h-5 text-red-500" />
-          <CheckCircle className="w-3 h-3 text-green-500 absolute -bottom-0.5 -right-0.5 bg-slate-900 rounded-full" />
+          <CheckCircle className="w-3 h-3 text-green-500 absolute -bottom-0.5 -right-0.5 bg-background rounded-full" />
         </div>
-        <span className="text-sm text-foreground">YouTube connecté</span>
+        <span className="text-sm text-foreground">{t.youtubeStatus.connected}</span>
       </div>
       {showDisconnect && <YouTubeDisconnectButton variant="link" />}
     </div>
   );
 }
 
-/**
- * Banner component that shows when YouTube is not connected
- */
 export function YouTubeConnectBanner({
   onConnect,
   className = "",
@@ -71,8 +66,8 @@ export function YouTubeConnectBanner({
   className?: string;
 }) {
   const connectionStatus = useQuery(youtubeApi?.getYoutubeConnectionStatus) as { connected: boolean } | undefined;
+  const { t } = useTranslation();
 
-  // Don't show during loading or if connected
   if (connectionStatus === undefined || connectionStatus.connected) {
     return null;
   }
@@ -88,10 +83,10 @@ export function YouTubeConnectBanner({
           </div>
           <div>
             <h3 className="font-medium text-foreground">
-              Connectez votre compte YouTube
+              {t.youtubeStatus.connectAccount}
             </h3>
             <p className="text-sm text-muted-foreground">
-              Accédez à vos playlists et prenez des notes sur vos vidéos
+              {t.youtubeStatus.accessPlaylists}
             </p>
           </div>
         </div>
@@ -103,7 +98,7 @@ export function YouTubeConnectBanner({
           className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
         >
           <Youtube className="w-4 h-4" />
-          Connecter
+          {t.youtubeStatus.connect}
         </button>
       </div>
     </div>

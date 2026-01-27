@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@packages/backend/convex/_generated/api";
-import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { Trash, Clock, Send, FileText } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface YouTubeNotesPanelProps {
   youtubeVideoId: string;
@@ -20,6 +20,7 @@ export default function YouTubeNotesPanel({
 }: YouTubeNotesPanelProps) {
   const [content, setContent] = useState("");
   const [includeTimestamp, setIncludeTimestamp] = useState(true);
+  const { t, locale } = useTranslation();
 
   const notes = useQuery(api.notes.getNotesByYoutubeVideo, { youtubeVideoId });
   const createNote = useMutation(api.notes.createNoteForYoutubeVideo);
@@ -50,12 +51,16 @@ export default function YouTubeNotesPanel({
     }
   };
 
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+
   return (
     <div className="h-full flex flex-col">
-      <div className="p-4 border-b border-white/10">
+      <div className="p-4 border-b border-border dark:border-white/10">
         <div className="flex items-center gap-2 mb-4">
           <FileText className="w-5 h-5 text-orange-500" />
-          <h3 className="text-lg font-bold text-foreground">Notes</h3>
+          <h3 className="text-lg font-bold text-foreground">
+            {t.notesPanel.notes}
+          </h3>
           <span className="text-sm text-muted-foreground">
             ({notes?.length ?? 0})
           </span>
@@ -66,8 +71,8 @@ export default function YouTubeNotesPanel({
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Prenez une note..."
-              className="w-full p-3 pr-12 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-foreground placeholder:text-muted-foreground"
+              placeholder={t.notesPanel.placeholder}
+              className="w-full p-3 pr-12 bg-secondary dark:bg-white/5 border border-border dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-foreground placeholder:text-muted-foreground"
               rows={3}
             />
             <button
@@ -84,11 +89,11 @@ export default function YouTubeNotesPanel({
                 type="checkbox"
                 checked={includeTimestamp}
                 onChange={(e) => setIncludeTimestamp(e.target.checked)}
-                className="rounded border-white/20 bg-white/5"
+                className="rounded border-border dark:border-white/20 bg-secondary dark:bg-white/5"
               />
               <Clock className="w-3.5 h-3.5" />
               <span>
-                Inclure timestamp ({formatTime(Math.floor(currentTime))})
+                {t.notesPanel.includeTimestamp} ({formatTime(Math.floor(currentTime))})
               </span>
             </label>
           </div>
@@ -99,7 +104,7 @@ export default function YouTubeNotesPanel({
         {notes?.map((note) => (
           <div
             key={note._id}
-            className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors"
+            className="p-4 bg-secondary dark:bg-white/5 rounded-xl border border-border dark:border-white/10 hover:bg-accent dark:hover:bg-white/10 transition-colors"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1">
@@ -116,7 +121,7 @@ export default function YouTubeNotesPanel({
                   {note.content}
                 </p>
                 <p className="text-xs text-muted-foreground mt-2">
-                  {new Date(note.createdAt).toLocaleString("fr-FR", {
+                  {new Date(note.createdAt).toLocaleString(dateLocale, {
                     day: "numeric",
                     month: "short",
                     hour: "2-digit",
@@ -128,7 +133,7 @@ export default function YouTubeNotesPanel({
                 variant="ghost"
                 size="sm"
                 onClick={() => deleteNote({ id: note._id })}
-                aria-label="Supprimer la note"
+                aria-label={t.notesPanel.deleteNote}
                 className="text-muted-foreground hover:text-red-500"
               >
                 <Trash className="h-4 w-4" />
@@ -141,9 +146,9 @@ export default function YouTubeNotesPanel({
           <div className="text-center py-12">
             <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
             <p className="text-muted-foreground">
-              Aucune note pour cette vidéo.
+              {t.notesPanel.noNotes}
               <br />
-              Commencez à prendre des notes !
+              {t.notesPanel.startTaking}
             </p>
           </div>
         )}

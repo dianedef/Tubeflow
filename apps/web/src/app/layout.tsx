@@ -4,14 +4,15 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TranslationProvider } from "@/i18n";
 
 const inter = Inter({ subsets: ["latin"] });
 const montserrat = Montserrat({ subsets: ["latin"] });
 const lato = Lato({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Notes App",
-  description: "This is an app to take notes.",
+  title: "TubeFlow - Video Note-Taking",
+  description: "Watch videos, take timestamped notes, and organize your content with TubeFlow.",
 };
 
 export default function RootLayout({
@@ -26,7 +27,7 @@ export default function RootLayout({
           inter.className,
           montserrat.className,
           lato.className,
-          "pb-16 sm:pb-20",
+          "pb-16 sm:pb-0 sm:pt-[72px]",
         )}
       >
         <ThemeProvider
@@ -35,7 +36,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <ConvexClientProvider>
+            <TranslationProvider>{children}</TranslationProvider>
+          </ConvexClientProvider>
         </ThemeProvider>
       </body>
     </html>

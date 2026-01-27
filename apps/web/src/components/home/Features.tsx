@@ -1,70 +1,72 @@
-import Image from "next/image";
+"use client";
 
-const features = [
-  {
-    title: "Smart Organization",
-    description:
-      "Organize videos by theme, topic, or mood. Build your own learning paths, entertainment queues, or inspiration libraries.",
-    benefitTag: "Find what you need in seconds",
-    image: "/images/goodNews.png",
-  },
-  {
-    title: "Subscription Dashboard",
-    description:
-      "A clean, organized view of all your subscriptions. Sort by upload frequency, last watched, or custom categories.",
-    benefitTag: "Stay connected to what matters",
-    image: "/images/cloudSync.png",
-  },
-  {
-    title: "Distraction-Free Viewing",
-    description:
-      "No suggested videos pulling you away. No autoplay to random content. Just your curated playlists and intentional viewing.",
-    benefitTag: "Reclaim your time and focus",
-    image: "/images/googleCalander.png",
-  },
-  {
-    title: "Intelligent Search",
-    description:
-      "Search across all your saved content, playlists, and subscriptions. Filter by duration, date, channel, or custom tags.",
-    benefitTag: "Your content library, searchable",
-    image: "/images/bot.png",
-  },
-  {
-    title: "Cross-Device Sync",
-    description:
-      "Your playlists, watch history, and preferences sync seamlessly across all your devices. Pick up exactly where you left off.",
-    benefitTag: "Watch anywhere, anytime",
-    image: "/images/cloudSync.png",
-  },
-  {
-    title: "Privacy-First",
-    description:
-      "We don't track your viewing habits for advertising. No data selling. No creepy recommendations. Just a tool that works for you.",
-    benefitTag: "Watch with peace of mind",
-    image: "/images/goodNews.png",
-  },
-];
+import Image from "next/image";
+import { useTranslation } from "@/i18n";
 
 const Features = () => {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      title: t.features.smartOrgTitle,
+      description: t.features.smartOrgDesc,
+      benefitTag: t.features.smartOrgTag,
+      image: "/images/goodNews.png",
+    },
+    {
+      title: t.features.subDashTitle,
+      description: t.features.subDashDesc,
+      benefitTag: t.features.subDashTag,
+      image: "/images/cloudSync.png",
+    },
+    {
+      title: t.features.distractionTitle,
+      description: t.features.distractionDesc,
+      benefitTag: t.features.distractionTag,
+      image: "/images/googleCalander.png",
+    },
+    {
+      title: t.features.searchTitle,
+      description: t.features.searchDesc,
+      benefitTag: t.features.searchTag,
+      image: "/images/bot.png",
+    },
+    {
+      title: t.features.crossDeviceTitle,
+      description: t.features.crossDeviceDesc,
+      benefitTag: t.features.crossDeviceTag,
+      image: "/images/cloudSync.png",
+    },
+    {
+      title: t.features.privacyTitle,
+      description: t.features.privacyDesc,
+      benefitTag: t.features.privacyTag,
+      image: "/images/goodNews.png",
+    },
+  ];
+
   return (
-    <section id="Features" className="relative pointer-events-none bg-black">
+    <section
+      id="Features"
+      className="relative pointer-events-none bg-background overflow-hidden"
+    >
       <Image
         src={"/images/blue-circle.svg"}
         width={503}
         height={531}
         alt=""
-        className="absolute hidden sm:block -left-40 -top-48 h-[531px]"
+        className="absolute hidden sm:block -left-40 -top-48 h-[531px] opacity-30 dark:opacity-100"
       />
       <div className="container py-16 sm:py-24 px-2 md:px-0">
-        <p className="text-[17px] sm:text-3xl not-italic font-medium leading-[90.3%] tracking-[-0.75px] text-center font-montserrat pb-2 sm:pb-[18px] text-gray-400">
-          Features
+        <p className="text-[17px] sm:text-3xl not-italic font-medium leading-[90.3%] tracking-[-0.75px] text-center font-montserrat pb-2 sm:pb-[18px] text-muted-foreground">
+          {t.features.label}
         </p>
-        <h3 className="text-3xl sm:text-[57px] not-italic font-medium leading-[90.3%] tracking-[-1.425px] font-montserrat text-center pb-[46px] sm:pb-[87px] text-white">
-          Everything You Need, Nothing You Don't
+        <h3 className="text-3xl sm:text-[57px] not-italic font-medium leading-[90.3%] tracking-[-1.425px] font-montserrat text-center pb-[46px] sm:pb-[87px] text-foreground">
+          {t.features.title}
         </h3>
 
         <div className="relative">
-          <div className="hidden sm:flex justify-between items-center absolute inset-0 -z-10">
+          <div className="hidden sm:flex justify-between items-center absolute inset-0 -z-10 opacity-20 dark:opacity-100">
             {Array(3)
               .fill(0)
               .map((_, index) => (
@@ -82,7 +84,7 @@ const Features = () => {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-4 bg-gray-900 border rounded-[17px] py-6 px-4 sm:py-8 sm:px-6 border-solid border-gray-800 shadow-xl hover:shadow-2xl transition-shadow"
+                className="flex flex-col gap-4 bg-section-card border rounded-[17px] py-6 px-4 sm:py-8 sm:px-6 border-solid border-section-card-border shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
               >
                 <div className="flex gap-4 sm:gap-6 items-start">
                   <div className="min-w-16 sm:min-w-20">
@@ -95,16 +97,16 @@ const Features = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-[24px] sm:text-[36px] not-italic font-medium leading-[90.3%] tracking-[-0.9px] pb-3 sm:pb-4 font-montserrat text-white">
+                    <h4 className="text-[24px] sm:text-[36px] not-italic font-medium leading-[90.3%] tracking-[-0.9px] pb-3 sm:pb-4 font-montserrat text-section-foreground">
                       {feature.title}
                     </h4>
-                    <p className="font-montserrat text-[15px] sm:text-xl not-italic font-normal leading-[120%] tracking-[-0.4px] text-gray-300">
+                    <p className="font-montserrat text-[15px] sm:text-xl not-italic font-normal leading-[120%] tracking-[-0.4px] text-section-muted">
                       {feature.description}
                     </p>
                   </div>
                 </div>
                 <div className="ml-0 sm:ml-[104px]">
-                  <span className="inline-block bg-primary/20 text-primary px-4 py-2 rounded-full text-sm sm:text-base font-medium">
+                  <span className="inline-block bg-primary/10 dark:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm sm:text-base font-medium">
                     {feature.benefitTag}
                   </span>
                 </div>

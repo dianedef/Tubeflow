@@ -2,6 +2,7 @@
 
 import { Trash2, Archive, Heart, Share2, Play, Clock } from "lucide-react";
 import SwipeableCard, { SwipeActionConfig } from "./SwipeableCard";
+import { useTranslation } from "@/i18n";
 
 interface Video {
   id: string;
@@ -31,16 +32,18 @@ export default function SwipeableVideoCard({
   onDelete,
   onClick,
 }: SwipeableVideoCardProps) {
+  const { t, locale } = useTranslation();
+
   const leadingActions: SwipeActionConfig[] = [
     {
       icon: Archive,
-      label: "Archive",
+      label: t.common.archive,
       color: "bg-blue-500",
       onClick: () => onArchive?.(video.id) ?? console.log("Archive", video.id),
     },
     {
       icon: Heart,
-      label: "Like",
+      label: t.common.like,
       color: "bg-pink-500",
       onClick: () => onLike?.(video.id) ?? console.log("Like", video.id),
     },
@@ -49,18 +52,20 @@ export default function SwipeableVideoCard({
   const trailingActions: SwipeActionConfig[] = [
     {
       icon: Share2,
-      label: "Share",
+      label: t.common.share,
       color: "bg-emerald-500",
       onClick: () => onShare?.(video.id) ?? console.log("Share", video.id),
     },
     {
       icon: Trash2,
-      label: "Delete",
+      label: t.common.delete,
       color: "bg-red-500",
       onClick: () => onDelete?.(video.id) ?? console.log("Delete", video.id),
       destructive: true,
     },
   ];
+
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
 
   return (
     <SwipeableCard
@@ -68,7 +73,7 @@ export default function SwipeableVideoCard({
       trailingActions={trailingActions}
       onClick={() => onClick?.(video.id) ?? console.log("Navigate to video", video.id)}
     >
-      <div className="group w-full backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white/15">
+      <div className="group w-full backdrop-blur-xl bg-card dark:bg-white/10 border border-border dark:border-white/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 dark:hover:bg-white/15">
         <div className="flex flex-col sm:flex-row">
           <div className="relative sm:w-72 aspect-video sm:aspect-[16/10] overflow-hidden">
             <img
@@ -111,15 +116,17 @@ export default function SwipeableVideoCard({
               </div>
 
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <span className="font-semibold text-foreground">
-                    {video.views}
-                  </span>{" "}
-                  vues
-                </span>
+                {video.views && (
+                  <span className="flex items-center gap-1">
+                    <span className="font-semibold text-foreground">
+                      {video.views}
+                    </span>{" "}
+                    {t.common.views}
+                  </span>
+                )}
                 <span className="w-1 h-1 rounded-full bg-muted-foreground" />
                 <span>
-                  {new Date(video.publishedAt).toLocaleDateString("fr-FR", {
+                  {new Date(video.publishedAt).toLocaleDateString(dateLocale, {
                     day: "numeric",
                     month: "short",
                     year: "numeric",

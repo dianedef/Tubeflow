@@ -6,17 +6,19 @@ import { api } from "@packages/backend/convex/_generated/api";
 import { Id } from "@packages/backend/convex/_generated/dataModel";
 import VideoPlayer from "@/components/videos/VideoPlayer";
 import NotesPanel from "@/components/videos/NotesPanel";
+import { useTranslation } from "@/i18n";
 
 export default function VideoWatchPage({ params }: { params: { id: string } }) {
   const videoId = params.id as Id<"videos">;
   const video = useQuery(api.videos.getVideo, { id: videoId });
   const [currentTime, setCurrentTime] = useState(0);
+  const { t, locale } = useTranslation();
 
   if (!video) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">Loading video...</p>
+          <p className="text-muted-foreground">{t.videoDetail.loadingVideo}</p>
         </div>
       </div>
     );
@@ -33,9 +35,15 @@ export default function VideoWatchPage({ params }: { params: { id: string } }) {
               {video.title}
             </h1>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-              <span>{video.views} views</span>
+              <span>
+                {video.views} {t.common.views}
+              </span>
               <span>{video.likes} likes</span>
-              <span>{new Date(video.createdAt).toLocaleDateString()}</span>
+              <span>
+                {new Date(video.createdAt).toLocaleDateString(
+                  locale === "fr" ? "fr-FR" : "en-US"
+                )}
+              </span>
             </div>
             {video.description && (
               <p className="mt-4 text-foreground whitespace-pre-wrap">

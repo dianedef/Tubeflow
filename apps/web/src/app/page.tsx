@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/Header";
+import Benefits from "@/components/home/Benefits";
 import Features from "@/components/home/Features";
 import Footer from "@/components/home/Footer";
 import FooterHero from "@/components/home/FooterHero";
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <ProblemSection />
       <SolutionSection />
+      <Benefits />
       <Features />
       <Testimonials />
       <FooterHero />

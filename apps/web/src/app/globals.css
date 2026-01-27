@@ -27,6 +27,12 @@
   --color-popover: #ffffff;
   --color-popover-foreground: #0f172a;
 
+  --color-section: #f8fafc;
+  --color-section-foreground: #0f172a;
+  --color-section-muted: #94a3b8;
+  --color-section-card: #ffffff;
+  --color-section-card-border: #e2e8f0;
+
   --font-inter: Inter, sans-serif;
   --font-lato: Lato, sans-serif;
   --font-montserrat: Montserrat, sans-serif;
@@ -58,6 +64,12 @@
   --color-card-foreground: #fafafa;
   --color-popover: #18181b;
   --color-popover-foreground: #fafafa;
+
+  --color-section: #0a0a0b;
+  --color-section-foreground: #fafafa;
+  --color-section-muted: #a1a1aa;
+  --color-section-card: #18181b;
+  --color-section-card-border: #27272a;
 }
 
 @layer base {
@@ -69,8 +81,16 @@
     border-color: theme("colors.border");
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-foreground;
   }
 }
 

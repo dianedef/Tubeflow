@@ -12,8 +12,8 @@ const Logo = ({ isMobile }: Props) => {
       <div className="flex gap-2 items-center">
         <Image src={"/images/logo.png"} width={26} height={26} alt="logo" />
         {!isMobile ? (
-          <h1 className="font-montserrat text-foreground text-3xl sm:text-[35px] not-italic font-normal leading-[90.3%] tracking-[-0.875px]">
-            UseNotes
+          <h1 className="font-montserrat text-foreground text-2xl sm:text-[28px] not-italic font-semibold leading-[90.3%] tracking-[-0.5px]">
+            Tube<span className="text-primary">Flow</span>
           </h1>
         ) : null}
       </div>

@@ -2,6 +2,7 @@
 
 import { Youtube, ExternalLink, Shield, RefreshCw } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "@/i18n";
 
 interface YouTubeConnectPromptProps {
   onConnect?: () => void;
@@ -15,11 +16,11 @@ export default function YouTubeConnectPrompt({
   className = "",
 }: YouTubeConnectPromptProps) {
   const [isConnecting, setIsConnecting] = useState(false);
+  const { t } = useTranslation();
 
   const handleConnect = () => {
     setIsConnecting(true);
     onConnect?.();
-    // Redirect to OAuth endpoint
     window.location.href = "/api/auth/youtube";
   };
 
@@ -35,7 +36,7 @@ export default function YouTubeConnectPrompt({
         ) : (
           <Youtube className="w-4 h-4" />
         )}
-        {isConnecting ? "Connexion..." : "Connecter YouTube"}
+        {isConnecting ? t.youtubeConnect.connecting : t.youtubeConnect.connectYoutube}
       </button>
     );
   }
@@ -43,7 +44,7 @@ export default function YouTubeConnectPrompt({
   if (variant === "compact") {
     return (
       <div
-        className={`p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm ${className}`}
+        className={`p-4 rounded-xl bg-card dark:bg-white/5 border border-border dark:border-white/10 backdrop-blur-sm ${className}`}
       >
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2 rounded-lg bg-red-600">
@@ -51,10 +52,10 @@ export default function YouTubeConnectPrompt({
           </div>
           <div>
             <h3 className="font-semibold text-foreground">
-              Connectez votre compte YouTube
+              {t.youtubeConnect.connectAccount}
             </h3>
             <p className="text-sm text-muted-foreground">
-              Pour voir vos playlists et vidéos
+              {t.youtubeConnect.toSeePlaylists}
             </p>
           </div>
         </div>
@@ -68,7 +69,7 @@ export default function YouTubeConnectPrompt({
           ) : (
             <ExternalLink className="w-4 h-4" />
           )}
-          {isConnecting ? "Connexion en cours..." : "Se connecter avec Google"}
+          {isConnecting ? t.youtubeConnect.connectingInProgress : t.youtubeConnect.signInGoogle}
         </button>
       </div>
     );
@@ -77,36 +78,35 @@ export default function YouTubeConnectPrompt({
   // Full variant
   return (
     <div
-      className={`max-w-md mx-auto p-6 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 backdrop-blur-xl shadow-xl ${className}`}
+      className={`max-w-md mx-auto p-6 rounded-2xl bg-card dark:bg-gradient-to-br dark:from-white/10 dark:to-white/5 border border-border dark:border-white/20 backdrop-blur-xl shadow-xl ${className}`}
     >
       <div className="text-center mb-6">
         <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-red-500 to-red-700 shadow-lg mb-4">
           <Youtube className="w-10 h-10 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-foreground mb-2">
-          Connectez YouTube
+          {t.youtubeConnect.connectTitle}
         </h2>
         <p className="text-muted-foreground">
-          Accédez à vos playlists YouTube directement dans TubeFlow pour prendre
-          des notes sur vos vidéos préférées.
+          {t.youtubeConnect.connectDesc}
         </p>
       </div>
 
       <div className="space-y-3 mb-6">
         <Feature
           icon="playlist"
-          title="Vos playlists"
-          description="Accédez à toutes vos playlists YouTube"
+          title={t.youtubeConnect.yourPlaylists}
+          description={t.youtubeConnect.yourPlaylistsDesc}
         />
         <Feature
           icon="notes"
-          title="Notes synchronisées"
-          description="Prenez des notes horodatées sur vos vidéos"
+          title={t.youtubeConnect.syncedNotes}
+          description={t.youtubeConnect.syncedNotesDesc}
         />
         <Feature
           icon="secure"
-          title="Connexion sécurisée"
-          description="OAuth 2.0 - vos identifiants restent privés"
+          title={t.youtubeConnect.secureConnection}
+          description={t.youtubeConnect.secureConnectionDesc}
         />
       </div>
 
@@ -118,19 +118,19 @@ export default function YouTubeConnectPrompt({
         {isConnecting ? (
           <>
             <RefreshCw className="w-5 h-5 animate-spin" />
-            Connexion en cours...
+            {t.youtubeConnect.connectingInProgress}
           </>
         ) : (
           <>
             <Youtube className="w-5 h-5" />
-            Se connecter avec YouTube
+            {t.youtubeConnect.signInYoutube}
           </>
         )}
       </button>
 
       <p className="mt-4 text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
         <Shield className="w-3 h-3" />
-        Vos données sont protégées et ne sont jamais partagées
+        {t.youtubeConnect.dataProtected}
       </p>
     </div>
   );
@@ -146,7 +146,7 @@ function Feature({
   description: string;
 }) {
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg bg-white/5">
+    <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary dark:bg-white/5">
       <div className="p-1.5 rounded-md bg-red-600/20 text-red-400">
         {icon === "playlist" && (
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

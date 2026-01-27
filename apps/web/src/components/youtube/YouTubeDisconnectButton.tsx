@@ -1,9 +1,10 @@
 "use client";
 
-import { Youtube, RefreshCw } from "lucide-react";
+import { Youtube, RefreshCw, LogOut } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@packages/backend/convex/_generated/api";
 import { useState } from "react";
+import { useTranslation } from "@/i18n";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const youtubeApi = (api as any).youtube as Record<string, any> | undefined;
@@ -22,6 +23,7 @@ export default function YouTubeDisconnectButton({
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const disconnectYoutube = useMutation(youtubeApi?.disconnectYoutube);
+  const { t } = useTranslation();
 
   const handleDisconnect = async () => {
     if (!showConfirm) {
@@ -33,7 +35,6 @@ export default function YouTubeDisconnectButton({
     try {
       await disconnectYoutube();
       onDisconnect?.();
-      // Reload to refresh state
       window.location.reload();
     } catch (error) {
       console.error("Failed to disconnect YouTube:", error);
@@ -51,19 +52,21 @@ export default function YouTubeDisconnectButton({
     if (showConfirm) {
       return (
         <div className={`inline-flex items-center gap-2 ${className}`}>
-          <span className="text-sm text-muted-foreground">Confirmer ?</span>
+          <span className="text-sm text-muted-foreground">
+            {t.youtubeDisconnect.confirm}
+          </span>
           <button
             onClick={handleDisconnect}
             disabled={isDisconnecting}
             className="text-sm text-red-500 hover:text-red-400 transition-colors"
           >
-            {isDisconnecting ? "..." : "Oui"}
+            {isDisconnecting ? "..." : t.common.yes}
           </button>
           <button
             onClick={handleCancel}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Non
+            {t.common.no}
           </button>
         </div>
       );
@@ -75,7 +78,7 @@ export default function YouTubeDisconnectButton({
         className={`inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-red-500 transition-colors ${className}`}
       >
         <LogOut className="w-3.5 h-3.5" />
-        Déconnecter YouTube
+        {t.youtubeDisconnect.disconnect}
       </button>
     );
   }
@@ -84,20 +87,22 @@ export default function YouTubeDisconnectButton({
     if (showConfirm) {
       return (
         <div className={`flex items-center justify-between px-3 py-2 ${className}`}>
-          <span className="text-sm text-foreground">Déconnecter ?</span>
+          <span className="text-sm text-foreground">
+            {t.youtubeDisconnect.disconnectQuestion}
+          </span>
           <div className="flex items-center gap-2">
             <button
               onClick={handleDisconnect}
               disabled={isDisconnecting}
               className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
             >
-              {isDisconnecting ? <RefreshCw className="w-3 h-3 animate-spin" /> : "Oui"}
+              {isDisconnecting ? <RefreshCw className="w-3 h-3 animate-spin" /> : t.common.yes}
             </button>
             <button
               onClick={handleCancel}
               className="px-2 py-1 text-xs bg-white/10 text-foreground rounded hover:bg-white/20 transition-colors"
             >
-              Non
+              {t.common.no}
             </button>
           </div>
         </div>
@@ -110,7 +115,7 @@ export default function YouTubeDisconnectButton({
         className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-white/5 transition-colors rounded-lg ${className}`}
       >
         <Youtube className="w-4 h-4 text-red-500" />
-        <span>Déconnecter YouTube</span>
+        <span>{t.youtubeDisconnect.disconnect}</span>
       </button>
     );
   }
@@ -122,7 +127,7 @@ export default function YouTubeDisconnectButton({
         className={`flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 ${className}`}
       >
         <span className="text-sm text-foreground flex-1">
-          Confirmer la déconnexion de YouTube ?
+          {t.youtubeDisconnect.confirmDisconnect}
         </span>
         <button
           onClick={handleDisconnect}
@@ -132,14 +137,14 @@ export default function YouTubeDisconnectButton({
           {isDisconnecting ? (
             <RefreshCw className="w-4 h-4 animate-spin" />
           ) : (
-            "Oui, déconnecter"
+            t.youtubeDisconnect.yesDisconnect
           )}
         </button>
         <button
           onClick={handleCancel}
           className="px-3 py-1.5 text-sm bg-white/10 text-foreground rounded-md hover:bg-white/20 transition-colors"
         >
-          Annuler
+          {t.common.cancel}
         </button>
       </div>
     );
@@ -151,7 +156,7 @@ export default function YouTubeDisconnectButton({
       className={`flex items-center gap-2 px-4 py-2 text-sm bg-white/5 hover:bg-white/10 border border-white/10 text-foreground rounded-lg transition-colors ${className}`}
     >
       <Youtube className="w-4 h-4 text-red-500" />
-      Déconnecter YouTube
+      {t.youtubeDisconnect.disconnect}
     </button>
   );
 }
