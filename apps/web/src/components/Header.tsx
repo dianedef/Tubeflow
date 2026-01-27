@@ -3,20 +3,11 @@
 import { useState, useEffect } from "react";
 import Logo from "./common/Logo";
 import Link from "next/link";
-import { useUser, useClerk } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 import { UserNav } from "./common/UserNav";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
-import ComplexToggle from "./home/ComplexToggle";
 import { useTranslation } from "@/i18n";
 import {
   Home,
@@ -26,14 +17,18 @@ import {
   Settings,
 } from "lucide-react";
 
+const navLinkClass =
+  "text-muted-foreground text-sm font-medium leading-6 font-montserrat hover:text-foreground px-3 py-1.5 rounded-md hover:bg-accent transition-colors";
+
+const navLinkActiveClass =
+  "text-foreground text-sm font-medium leading-6 font-montserrat px-3 py-1.5 rounded-md bg-accent";
+
 export default function Header() {
   const { user } = useUser();
-  const { signOut } = useClerk();
   const pathname = usePathname();
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isLandscape, setIsLandscape] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,86 +62,76 @@ export default function Header() {
                 <Logo />
               </div>
 
-              {isHomePage && (
-                <div className="flex flex-1 items-center justify-center">
-                  <div className="ml-6 block">
-                    <div className="flex items-center space-x-8">
+              <div className="flex flex-1 items-center justify-center">
+                <div className="flex items-center space-x-1">
+                  {isHomePage ? (
+                    <>
+                      <Link href="/videos" className={navLinkClass}>
+                        {t.common.videos}
+                      </Link>
+                      <Link href="/playlists" className={navLinkClass}>
+                        {t.common.playlists}
+                      </Link>
+                      <Link href="/notes" className={navLinkClass}>
+                        {t.common.notes}
+                      </Link>
+                      <Link href="#Benefits" className={navLinkClass}>
+                        {t.common.benefits}
+                      </Link>
+                      <Link href="#reviews" className={navLinkClass}>
+                        {t.common.reviews}
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/videos"
+                        className={
+                          pathname.startsWith("/videos")
+                            ? navLinkActiveClass
+                            : navLinkClass
+                        }
+                      >
+                        {t.common.videos}
+                      </Link>
                       <Link
                         href="/playlists"
-                        className="text-muted-foreground text-sm font-medium leading-6 font-montserrat hover:text-foreground px-3 py-1.5 rounded-md hover:bg-accent transition-colors"
+                        className={
+                          pathname.startsWith("/playlists")
+                            ? navLinkActiveClass
+                            : navLinkClass
+                        }
                       >
                         {t.common.playlists}
                       </Link>
                       <Link
                         href="/notes"
-                        className="text-muted-foreground text-sm font-medium leading-6 font-montserrat hover:text-foreground px-3 py-1.5 rounded-md hover:bg-accent transition-colors"
+                        className={
+                          pathname.startsWith("/notes")
+                            ? navLinkActiveClass
+                            : navLinkClass
+                        }
                       >
                         {t.common.notes}
                       </Link>
-                      <Menubar>
-                        <MenubarMenu>
-                          <MenubarTrigger>{t.common.navigation}</MenubarTrigger>
-                          <MenubarContent>
-                            <MenubarItem>
-                              <Link href="#Benefits">{t.common.benefits}</Link>
-                            </MenubarItem>
-                            <MenubarItem>
-                              <Link href="#reviews">{t.common.reviews}</Link>
-                            </MenubarItem>
-                            <MenubarSeparator />
-                            <MenubarItem>
-                              <Link href="/videos">{t.common.videos}</Link>
-                            </MenubarItem>
-                          </MenubarContent>
-                        </MenubarMenu>
-                        <MenubarMenu>
-                          <MenubarTrigger>
-                            {t.common.accountSettings}
-                          </MenubarTrigger>
-                          <MenubarContent>
-                            <MenubarItem>
-                              <Link href="/preferences">
-                                {t.common.preferences}
-                              </Link>
-                            </MenubarItem>
-                            <MenubarSeparator />
-                            <MenubarItem asChild>
-                              <ComplexToggle
-                                isSummary={isLandscape}
-                                setIsSummary={setIsLandscape}
-                              />
-                            </MenubarItem>
-                            <MenubarSeparator />
-                            <MenubarItem>{t.common.helpSupport}</MenubarItem>
-                          </MenubarContent>
-                        </MenubarMenu>
-                      </Menubar>
-                    </div>
-                  </div>
+                      <Link
+                        href="/preferences"
+                        className={
+                          pathname.startsWith("/preferences")
+                            ? navLinkActiveClass
+                            : navLinkClass
+                        }
+                      >
+                        {t.common.preferences}
+                      </Link>
+                    </>
+                  )}
                 </div>
-              )}
+              </div>
 
               <div className="flex items-center gap-3">
                 {user ? (
                   <>
-                    <Link href="/videos">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="font-montserrat font-medium"
-                      >
-                        {t.common.videos}
-                      </Button>
-                    </Link>
-                    <Link href="/notes">
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        className="font-montserrat font-medium"
-                      >
-                        {t.common.myNotes}
-                      </Button>
-                    </Link>
                     <ThemeToggle />
                     <UserNav
                       image={user?.imageUrl}

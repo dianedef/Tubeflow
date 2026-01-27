@@ -14,16 +14,16 @@ const Hero = () => {
       <div className="container relative py-16 sm:py-36 px-6 sm:px-0">
         <div className="flex sm:flex-wrap flex-nowrap justify-between items-center max-h-[690px] h-full">
           <div>
-            <h2 className="font-montserrat pb-7 sm:pb-[26px] text-[44px] sm:text-[75px] not-italic font-medium leading-[111.3%] tracking-[-1.1px] sm:tracking-[-1.875px] text-foreground whitespace-pre-line">
+            <h2 className="font-montserrat pb-5 sm:pb-[26px] text-[28px] sm:text-[56px] not-italic font-medium leading-[111.3%] tracking-[-0.7px] sm:tracking-[-1.4px] text-foreground whitespace-pre-line">
               {t.hero.title}
             </h2>
-            <p className="font-montserrat sm:pb-16 max-w-[680px] text-xl sm:text-3xl not-italic font-normal leading-[103.3%] tracking-[-0.5px] sm:tracking-[-0.75px] pb-11 text-muted-foreground">
+            <p className="font-montserrat sm:pb-16 max-w-[680px] text-base sm:text-2xl not-italic font-normal leading-[130%] tracking-[-0.3px] sm:tracking-[-0.6px] pb-8 text-muted-foreground">
               {t.hero.subtitle}
             </p>
             <Link href={"/notes"}>
               <Button
                 variant="primary"
-                className="gap-2.5 text-xl sm:text-3xl px-8 py-4"
+                className="gap-2.5 text-base sm:text-xl px-6 py-3 sm:px-8 sm:py-4"
               >
                 {t.hero.cta}
               </Button>
