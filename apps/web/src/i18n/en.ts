@@ -244,6 +244,17 @@ const en = {
     footer: "Synced notes \u2022 Access anywhere \u2022 Smart search",
   },
 
+  // Sign-in Prompt (shown instead of YouTube connect when not logged in)
+  signInPrompt: {
+    title: "Sign in to TubeFlow",
+    desc: "Sign in to connect your YouTube account, organize playlists, and take notes on your favorite videos.",
+    cta: "Sign in",
+    compactTitle: "Sign in required",
+    compactDesc: "Sign in to connect YouTube",
+    bannerTitle: "Sign in to get started",
+    bannerDesc: "Connect your account to access YouTube playlists and notes",
+  },
+
   // YouTube Connect Prompt
   youtubeConnect: {
     connecting: "Connecting...",
@@ -357,5 +368,10 @@ const en = {
   },
 } as const;
 
-export type TranslationKeys = typeof en;
+// Deep-map all string literals to `string` so translations can differ from en
+type DeepStringify<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepStringify<T[K]>;
+};
+
+export type TranslationKeys = DeepStringify<typeof en>;
 export default en;

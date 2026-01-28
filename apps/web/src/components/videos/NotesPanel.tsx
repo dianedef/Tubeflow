@@ -25,7 +25,7 @@ export default function NotesPanel({ videoId, currentTime }: NotesPanelProps) {
   const [content, setContent] = useState("");
   const [includeTimestamp, setIncludeTimestamp] = useState(true);
 
-  const notes = useQuery(api.notes.getNotes, { videoId }) as Note[] | undefined;
+  const notes = useQuery(api.notes.getNotes, { videoId: videoId as Id<"videos"> }) as Note[] | undefined;
   const createNote = useMutation(api.notes.createNote);
   const deleteNote = useMutation(api.notes.deleteNote);
 

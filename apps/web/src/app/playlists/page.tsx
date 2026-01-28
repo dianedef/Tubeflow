@@ -7,10 +7,33 @@ import { useYoutubePlaylists, useYoutubePlaylistActions } from "@/hooks/use-yout
 import { List, Sparkles, Plus, RefreshCw, Youtube } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useTranslation } from "@/i18n";
 
 export default function PlaylistsPage() {
+  return (
+    <Suspense fallback={<PlaylistsPageSkeleton />}>
+      <PlaylistsPageContent />
+    </Suspense>
+  );
+}
+
+function PlaylistsPageSkeleton() {
+  return (
+    <main className="min-h-screen bg-background dark:bg-gradient-to-br dark:from-slate-900 dark:via-purple-900/50 dark:to-slate-900">
+      <div className="relative z-10">
+        <Header />
+        <div className="container py-8">
+          <div className="flex items-center justify-center py-12">
+            <RefreshCw className="w-8 h-8 text-muted-foreground animate-spin" />
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function PlaylistsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useTranslation();

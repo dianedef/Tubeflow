@@ -123,7 +123,7 @@ http.route({
 
     // Handle subscription events
     if (eventType === "subscription.created" || eventType === "subscription.updated" || eventType === "subscription.active") {
-      const subscription = evt.data;
+      const subscription = evt.data as PolarSubscriptionData;
       const customer = subscription.customer;
 
       // Map Polar product to our plan
@@ -145,7 +145,7 @@ http.route({
     }
 
     if (eventType === "subscription.canceled") {
-      const subscription = evt.data;
+      const subscription = evt.data as PolarSubscriptionData;
 
       await ctx.runMutation(internal.subscriptions.updateSubscriptionStatus, {
         polarSubscriptionId: subscription.id,
@@ -157,7 +157,7 @@ http.route({
     }
 
     if (eventType === "subscription.uncanceled") {
-      const subscription = evt.data;
+      const subscription = evt.data as PolarSubscriptionData;
 
       await ctx.runMutation(internal.subscriptions.updateSubscriptionStatus, {
         polarSubscriptionId: subscription.id,
@@ -169,7 +169,7 @@ http.route({
     }
 
     if (eventType === "subscription.revoked") {
-      const subscription = evt.data;
+      const subscription = evt.data as PolarSubscriptionData;
 
       await ctx.runMutation(internal.subscriptions.updateSubscriptionStatus, {
         polarSubscriptionId: subscription.id,
@@ -181,7 +181,7 @@ http.route({
     }
 
     if (eventType === "subscription.past_due") {
-      const subscription = evt.data;
+      const subscription = evt.data as PolarSubscriptionData;
 
       await ctx.runMutation(internal.subscriptions.updateSubscriptionStatus, {
         polarSubscriptionId: subscription.id,
@@ -194,7 +194,7 @@ http.route({
 
     // Handle customer created - link to existing user by email
     if (eventType === "customer.created") {
-      const customer = evt.data;
+      const customer = evt.data as PolarCustomerData;
 
       await ctx.runMutation(internal.subscriptions.linkCustomerToUser, {
         polarCustomerId: customer.id,
@@ -237,23 +237,30 @@ interface ClerkWebhookEvent {
 }
 
 // Type definitions for Polar webhook events
+interface PolarSubscriptionData {
+  id: string;
+  customer: {
+    id: string;
+    email: string;
+  };
+  product: {
+    id: string;
+    name: string;
+  };
+  current_period_start: string;
+  current_period_end: string;
+  cancel_at_period_end: boolean;
+  status: string;
+}
+
+interface PolarCustomerData {
+  id: string;
+  email: string;
+}
+
 interface PolarWebhookEvent {
   type: string;
-  data: {
-    id: string;
-    customer: {
-      id: string;
-      email: string;
-    };
-    product: {
-      id: string;
-      name: string;
-    };
-    current_period_start: string;
-    current_period_end: string;
-    cancel_at_period_end: boolean;
-    status: string;
-  };
+  data: PolarSubscriptionData | PolarCustomerData;
 }
 
 export default http;

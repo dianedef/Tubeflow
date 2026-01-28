@@ -6,36 +6,22 @@ import { Play, Pause } from "lucide-react";
 import { IconButton } from "@/components/ui/icon-button";
 import { Progress } from "@/components/ui/progress";
 
-interface OnProgressProps {
-  played: number;
-  playedSeconds: number;
-  loaded: number;
-  loadedSeconds: number;
-}
-
 interface VideoPlayerProps {
   url: string;
   onTimeUpdate?: (seconds: number) => void;
 }
 
 export default function VideoPlayer({ url, onTimeUpdate }: VideoPlayerProps) {
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const handleProgress = (state: any) => {
-    if (state && typeof state.played === "number") {
-      setProgress(state.played * 100);
-      if (onTimeUpdate && typeof state.playedSeconds === "number") {
-        onTimeUpdate(state.playedSeconds);
-      }
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    if (video.duration > 0) {
+      setProgress((video.currentTime / video.duration) * 100);
     }
-  };
-
-  const seekTo = (seconds: number) => {
-    if (playerRef.current) {
-      playerRef.current.seekTo(seconds, "seconds");
-    }
+    onTimeUpdate?.(video.currentTime);
   };
 
   return (
@@ -43,13 +29,12 @@ export default function VideoPlayer({ url, onTimeUpdate }: VideoPlayerProps) {
       <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden">
         <ReactPlayer
           ref={playerRef}
-          url={url}
+          src={url}
           width="100%"
           height="100%"
           playing={playing}
           controls={true}
-          onProgress={handleProgress}
-          config={{}}
+          onTimeUpdate={handleTimeUpdate}
         />
       </div>
 

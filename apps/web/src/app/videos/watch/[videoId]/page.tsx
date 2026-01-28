@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
-import type { OnProgressProps } from "react-player/base";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import YouTubeNotesPanel from "@/components/videos/YouTubeNotesPanel";
@@ -37,18 +36,16 @@ export default function VideoWatchPage() {
   const playlistId = searchParams.get("playlist");
   const startTime = searchParams.get("t");
 
-  const playerRef = useRef<ReactPlayer>(null);
+  const playerRef = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const [showNotes, setShowNotes] = useState(true);
 
   const playlistVideos = useQuery(
-    // @ts-expect-error - youtube module is generated after convex dev runs
     api.youtube?.getPlaylistVideos,
     playlistId ? { playlistId } : "skip"
   ) as VideoInfo[] | undefined;
 
-  // @ts-expect-error - youtube module is generated after convex dev runs
   const allVideos = useQuery(api.youtube?.getAllVideos) as VideoInfo[] | undefined;
   const videoInfo = allVideos?.find((v: VideoInfo) => v.id === videoId);
 
@@ -63,18 +60,18 @@ export default function VideoWatchPage() {
     if (isReady && startTime && playerRef.current) {
       const seconds = parseInt(startTime, 10);
       if (!isNaN(seconds)) {
-        playerRef.current.seekTo(seconds, "seconds");
+        playerRef.current.currentTime = seconds;
       }
     }
   }, [isReady, startTime]);
 
-  const handleProgress = (state: OnProgressProps) => {
-    setCurrentTime(state.playedSeconds);
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    setCurrentTime(e.currentTarget.currentTime);
   };
 
   const handleSeek = (seconds: number) => {
     if (playerRef.current) {
-      playerRef.current.seekTo(seconds, "seconds");
+      playerRef.current.currentTime = seconds;
     }
   };
 
@@ -156,19 +153,16 @@ export default function VideoWatchPage() {
               <div className="relative aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
                 <ReactPlayer
                   ref={playerRef}
-                  url={youtubeUrl}
+                  src={youtubeUrl}
                   width="100%"
                   height="100%"
                   playing={true}
                   controls={true}
-                  onProgress={handleProgress}
+                  onTimeUpdate={handleTimeUpdate}
                   onReady={() => setIsReady(true)}
                   config={{
                     youtube: {
-                      embedOptions: {
-                        modestbranding: 1,
-                        rel: 0,
-                      },
+                      rel: 0,
                     },
                   }}
                 />

@@ -234,6 +234,16 @@ const fr: TranslationKeys = {
     footer: "Notes synchronis\u00e9es \u2022 Acc\u00e8s partout \u2022 Recherche intelligente",
   },
 
+  signInPrompt: {
+    title: "Connectez-vous à TubeFlow",
+    desc: "Connectez-vous pour lier votre compte YouTube, organiser vos playlists et prendre des notes sur vos vidéos préférées.",
+    cta: "Se connecter",
+    compactTitle: "Connexion requise",
+    compactDesc: "Connectez-vous pour lier YouTube",
+    bannerTitle: "Connectez-vous pour commencer",
+    bannerDesc: "Connectez votre compte pour accéder aux playlists YouTube et aux notes",
+  },
+
   youtubeConnect: {
     connecting: "Connexion...",
     connectYoutube: "Connecter YouTube",

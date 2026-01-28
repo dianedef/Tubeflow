@@ -1,8 +1,16 @@
 "use client";
 
-import { Youtube, ExternalLink, Shield, RefreshCw } from "lucide-react";
-import { useState } from "react";
+import { Youtube, ExternalLink, Shield, RefreshCw, LogIn } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useAuth, useUser, SignInButton } from "@clerk/clerk-react";
 import { useTranslation } from "@/i18n";
+
+// Hook to detect client-side mount (avoids SSR/SSG issues)
+function useIsMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted;
+}
 
 interface YouTubeConnectPromptProps {
   onConnect?: () => void;
@@ -16,11 +24,25 @@ export default function YouTubeConnectPrompt({
   className = "",
 }: YouTubeConnectPromptProps) {
   const [isConnecting, setIsConnecting] = useState(false);
+  const mounted = useIsMounted();
+  const { sessionId } = useAuth();
+  const { isSignedIn, isLoaded } = useUser();
   const { t } = useTranslation();
 
+  // Avoid SSR/SSG issues and Clerk loading flicker
+  if (!mounted || !isLoaded) return null;
+
+  // If user is not signed into Clerk, show sign-in prompt instead
+  if (!isSignedIn) {
+    return <SignInPrompt variant={variant} className={className} />;
+  }
+
   const handleConnect = () => {
+    if (!sessionId) return;
     setIsConnecting(true);
     onConnect?.();
+    // Store session ID in a cookie so the OAuth callback can authenticate with Convex
+    document.cookie = `clerk_session_id=${sessionId}; path=/; max-age=600; SameSite=Lax`;
     window.location.href = "/api/auth/youtube";
   };
 
@@ -132,6 +154,83 @@ export default function YouTubeConnectPrompt({
         <Shield className="w-3 h-3" />
         {t.youtubeConnect.dataProtected}
       </p>
+    </div>
+  );
+}
+
+function SignInPrompt({
+  variant,
+  className = "",
+}: {
+  variant: "full" | "compact" | "inline";
+  className?: string;
+}) {
+  const { t } = useTranslation();
+
+  if (variant === "inline") {
+    return (
+      <SignInButton mode="modal">
+        <button
+          className={`inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors ${className}`}
+        >
+          <LogIn className="w-4 h-4" />
+          {t.signInPrompt.cta}
+        </button>
+      </SignInButton>
+    );
+  }
+
+  if (variant === "compact") {
+    return (
+      <div
+        className={`p-4 rounded-xl bg-card dark:bg-white/5 border border-border dark:border-white/10 backdrop-blur-sm ${className}`}
+      >
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2 rounded-lg bg-primary">
+            <LogIn className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-foreground">
+              {t.signInPrompt.compactTitle}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {t.signInPrompt.compactDesc}
+            </p>
+          </div>
+        </div>
+        <SignInButton mode="modal">
+          <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors">
+            <LogIn className="w-4 h-4" />
+            {t.signInPrompt.cta}
+          </button>
+        </SignInButton>
+      </div>
+    );
+  }
+
+  // Full variant
+  return (
+    <div
+      className={`max-w-md mx-auto p-6 rounded-2xl bg-card dark:bg-gradient-to-br dark:from-white/10 dark:to-white/5 border border-border dark:border-white/20 backdrop-blur-xl shadow-xl ${className}`}
+    >
+      <div className="text-center mb-6">
+        <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg mb-4">
+          <LogIn className="w-10 h-10 text-primary-foreground" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground mb-2">
+          {t.signInPrompt.title}
+        </h2>
+        <p className="text-muted-foreground">
+          {t.signInPrompt.desc}
+        </p>
+      </div>
+
+      <SignInButton mode="modal">
+        <button className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl transition-all shadow-lg hover:shadow-xl">
+          <LogIn className="w-5 h-5" />
+          {t.signInPrompt.cta}
+        </button>
+      </SignInButton>
     </div>
   );
 }

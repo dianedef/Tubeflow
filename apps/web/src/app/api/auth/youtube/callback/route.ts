@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@packages/backend/convex/_generated/api";
 
@@ -42,23 +42,25 @@ export async function GET(request: NextRequest) {
     return redirectWithError("Invalid state parameter");
   }
 
-  // Verify user is authenticated with Clerk
-  const { userId, getToken } = await auth();
-  if (!userId) {
+  // Get Clerk session ID from cookie (set by client before OAuth redirect)
+  const sessionId = request.cookies.get("clerk_session_id")?.value;
+  if (!sessionId) {
     return redirectWithError("User not authenticated");
   }
 
   try {
-    // Exchange authorization code for tokens
+    // Exchange authorization code for Google tokens
     const tokens = await exchangeCodeForTokens(code);
 
-    // Get Clerk token for Convex authentication
-    const convexToken = await getToken({ template: "convex" });
+    // Get a fresh Convex JWT from Clerk using the session ID
+    const clerk = await clerkClient();
+    const tokenResponse = await clerk.sessions.getToken(sessionId, "convex");
+    const convexToken = tokenResponse?.jwt;
     if (!convexToken) {
       return redirectWithError("Could not get Convex authentication token");
     }
 
-    // Save tokens to Convex
+    // Save YouTube tokens to Convex
     const convex = new ConvexHttpClient(CONVEX_URL);
     convex.setAuth(convexToken);
 
@@ -68,11 +70,12 @@ export async function GET(request: NextRequest) {
       expiresIn: tokens.expires_in,
     });
 
-    // Clear the state cookie and redirect to success page
+    // Clear cookies and redirect to success page
     const response = NextResponse.redirect(
       new URL("/playlists?youtube_connected=true", request.url)
     );
     response.cookies.delete("youtube_oauth_state");
+    response.cookies.delete("clerk_session_id");
 
     return response;
   } catch (err) {
