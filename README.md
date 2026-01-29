@@ -62,21 +62,23 @@ environment variables to get AI summaries.
 
 The `setup` command should now finish successfully.
 
-### 3. Configure environment variables with Doppler
+### 3. Configure both apps
 
-This project uses [Doppler](https://doppler.com) for environment variable management.
+In each app directory (`apps/web`, `apps/native`) create a `.env.local` file
+using the `.example.env` as a template and fill out your Convex and Clerk
+environment variables.
 
-Configure the following variables in your Doppler project:
-- `NEXT_PUBLIC_CONVEX_URL` / `EXPO_PUBLIC_CONVEX_URL`: Your Convex deployment URL
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` / `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`: From [Clerk dashboard](https://dashboard.clerk.com/last-active?path=api-keys)
-- `CLERK_SECRET_KEY`: From Clerk dashboard
+- Use the `CONVEX_URL` from `packages/backend/.env.local` for
+  `{NEXT,EXPO}_PUBLIC_CONVEX_URL`.
+- The Clerk publishable & secret keys can be found
+  [here](https://dashboard.clerk.com/last-active?path=api-keys).
 
 ### 4. Run both apps
 
-Run the following command to run both the web and mobile apps with Doppler:
+Run the following command to run both the web and mobile apps:
 
 ```sh
-doppler run -- npm run dev
+npm run dev
 ```
 
 This will allow you to use the ⬆ and ⬇ keyboard keys to see logs for each

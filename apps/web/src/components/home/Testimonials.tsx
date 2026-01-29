@@ -1,8 +1,5 @@
-"use client";
-
 import Image from "next/image";
 import TestTimonialCard from "../common/TestTimonialCard";
-import { useTranslation } from "@/i18n";
 
 const TestimonialsData = [
   {
@@ -17,7 +14,7 @@ const TestimonialsData = [
   {
     rating: 5,
     review:
-      "Really like the clean design of TubeFlow. The AI-driven search is impressively accurate, adding a personal dimension to my notes. Fast and very easy to use.",
+      "Really like the clean design of UseNotes. The AI-driven search is impressively accurate, adding a personal dimension to my notes. Fast and very easy to use.",
     name: "John Collins",
     designation: "Engineer & Author",
     profile: "/images/profile.png",
@@ -25,7 +22,7 @@ const TestimonialsData = [
   },
   {
     rating: 5,
-    review: "Simply brilliant! TubeFlow has elevated my productivity.",
+    review: "Simply brilliant! UseNotes has elevated my productivity.",
     name: "Moe Partuj",
     designation: "Student",
     profile: "/images/Moe-Partuj.jpeg",
@@ -34,23 +31,24 @@ const TestimonialsData = [
 ];
 
 const Testimonials = () => {
-  const { t } = useTranslation();
-
   return (
-    <section id="reviews" className="bg-section relative overflow-hidden">
+    <section
+      id="reviews"
+      className="bg_image bg_circle relative overflow-hidden"
+    >
       <Image
         src={"/images/blue-circle-right.svg"}
         width={503}
         height={531}
         alt=""
-        className="absolute hidden sm:block -right-40 top-1/4 h-[531px] opacity-30 dark:opacity-100"
+        className="absolute hidden sm:block -right-40 top-1/4 h-[531px]"
       />
       <div className="container py-11 sm:py-16 px-6 sm:px-0">
-        <p className="text-[17px] sm:text-3xl not-italic font-medium leading-[90.3%] tracking-[-0.75px] text-center font-montserrat pb-2 sm:pb-[18px] text-section-muted">
-          {t.testimonials.label}
+        <p className="text-black text-[17px] sm:text-3xl not-italic font-medium leading-[90.3%] tracking-[-0.75px] text-center font-montserrat pb-2 sm:pb-[18px]">
+          Reviews
         </p>
-        <h3 className="text-3xl sm:text-[57px] not-italic font-medium leading-[90.3%] tracking-[-1.425px] font-montserrat text-center pb-[20px] sm:pb-[87px] text-section-foreground">
-          {t.testimonials.title}
+        <h3 className=" text-black text-3xl sm:text-[57px] not-italic font-medium leading-[90.3%] tracking-[-1.425px] font-montserrat text-center pb-[20px] sm:pb-[87px]">
+          User Testimonials
         </h3>
 
         <div className="flex flex-wrap md:flex-nowrap justify-center items-start gap-4 pb-10 mb-10 relative">

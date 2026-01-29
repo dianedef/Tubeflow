@@ -1,237 +1,139 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "./common/Logo";
 import Link from "next/link";
 import { useUser } from "@clerk/clerk-react";
 import { UserNav } from "./common/UserNav";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Button } from "@/components/ui/button";
-import { useTranslation } from "@/i18n";
-import {
-  Home,
-  Video,
-  List,
-  FileText,
-  Settings,
-} from "lucide-react";
 
-const navLinkClass =
-  "text-muted-foreground text-sm font-medium leading-6 font-montserrat hover:text-foreground px-3 py-1.5 rounded-md hover:bg-accent transition-colors";
+type NavigationItem = {
+  name: string;
+  href: string;
+  current: boolean;
+};
 
-const navLinkActiveClass =
-  "text-foreground text-sm font-medium leading-6 font-montserrat px-3 py-1.5 rounded-md bg-accent";
+const navigation: NavigationItem[] = [
+  { name: "Benefits", href: "#Benefits", current: true },
+  { name: "Reviews", href: "#reviews", current: false },
+];
 
 export default function Header() {
   const { user } = useUser();
   const pathname = usePathname();
-  const { t } = useTranslation();
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 50) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
-  const isHomePage = pathname === "/";
 
   return (
-    <>
-      {/* Desktop Header - hidden on mobile */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 hidden sm:block ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
-        <div className="flex items-center bg-background/80 backdrop-blur-xl h-[72px] border-b border-border/50 shadow-sm">
-          <div className="container px-6">
-            <div className="relative flex h-16 items-center justify-between">
-              <div className="flex shrink-0 items-center">
-                <Logo />
-              </div>
-
-              <div className="flex flex-1 items-center justify-center">
-                <div className="flex items-center space-x-1">
-                  {isHomePage ? (
-                    <>
-                      <Link href="/videos" className={navLinkClass}>
-                        {t.common.videos}
-                      </Link>
-                      <Link href="/playlists" className={navLinkClass}>
-                        {t.common.playlists}
-                      </Link>
-                      <Link href="/notes" className={navLinkClass}>
-                        {t.common.notes}
-                      </Link>
-                      <Link href="#Benefits" className={navLinkClass}>
-                        {t.common.benefits}
-                      </Link>
-                      <Link href="#reviews" className={navLinkClass}>
-                        {t.common.reviews}
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href="/videos"
-                        className={
-                          pathname.startsWith("/videos")
-                            ? navLinkActiveClass
-                            : navLinkClass
-                        }
-                      >
-                        {t.common.videos}
-                      </Link>
-                      <Link
-                        href="/playlists"
-                        className={
-                          pathname.startsWith("/playlists")
-                            ? navLinkActiveClass
-                            : navLinkClass
-                        }
-                      >
-                        {t.common.playlists}
-                      </Link>
-                      <Link
-                        href="/notes"
-                        className={
-                          pathname.startsWith("/notes")
-                            ? navLinkActiveClass
-                            : navLinkClass
-                        }
-                      >
-                        {t.common.notes}
-                      </Link>
-                      <Link
-                        href="/preferences"
-                        className={
-                          pathname.startsWith("/preferences")
-                            ? navLinkActiveClass
-                            : navLinkClass
-                        }
-                      >
-                        {t.common.preferences}
-                      </Link>
-                    </>
-                  )}
+    <Disclosure as="nav" className=" ">
+      {({ open }) => (
+        <>
+          <div className="flex items-center bg-white h-16 sm:h-20">
+            <div className="container px-2 sm:px-0">
+              <div className="relative flex h-16 items-center justify-between">
+                <div className="flex sm:hidden shrink-0 items-center">
+                  <Logo isMobile={true} />
                 </div>
-              </div>
-
-              <div className="flex items-center gap-3">
+                <div className="sm:flex hidden shrink-0 items-center">
+                  <Logo />
+                </div>
+                {pathname === "/" && (
+                  <div className="flex flex-1 items-center justify-center ">
+                    <div className="hidden sm:ml-6 sm:block">
+                      <ul className="flex space-x-28">
+                        {navigation.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              href={item.href}
+                              className="text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal]"
+                              aria-current={item.current ? "page" : undefined}
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
                 {user ? (
-                  <>
-                    <ThemeToggle />
+                  <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <Link href="/notes">
+                      <button
+                        type="button"
+                        className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px] button"
+                      >
+                        See your Notes
+                      </button>
+                    </Link>
                     <UserNav
                       image={user?.imageUrl}
                       name={user?.fullName!}
                       email={user?.primaryEmailAddress?.emailAddress!}
                     />
-                  </>
+                  </div>
                 ) : (
-                  <>
-                    <Link href="/notes">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="font-montserrat font-medium"
-                      >
-                        {t.common.signIn}
-                      </Button>
+                  <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <Link
+                      href="/notes"
+                      className="border rounded-lg border-solid border-[#2D2D2D] text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-2.5"
+                    >
+                      Sign in
                     </Link>
-                    <Link href="/notes">
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        className="font-montserrat font-medium"
-                      >
-                        {t.common.getStarted}
-                      </Button>
+                    <Link
+                      href="/notes"
+                      className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px] button"
+                    >
+                      Get Started
                     </Link>
-                    <ThemeToggle />
-                  </>
+                  </div>
                 )}
+                <div className="block sm:hidden">
+                  {/* Mobile menu button*/}
+                  <DisclosureButton className="relative inline-flex  items-center justify-center rounded-md p-2 text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white">
+                    <span className="absolute -inset-0.5" />
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                    )}
+                  </DisclosureButton>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </nav>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-background/95 backdrop-blur-xl border-t border-border/50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
-        <div className="flex items-center justify-around h-16 px-2">
-          <Link
-            href="/"
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
-              pathname === "/"
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Home className="w-5 h-5" />
-            <span className="text-[10px] font-medium">{t.footer.home}</span>
-          </Link>
-          <Link
-            href="/videos"
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
-              pathname.startsWith("/videos")
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Video className="w-5 h-5" />
-            <span className="text-[10px] font-medium">{t.common.videos}</span>
-          </Link>
-          <Link
-            href="/playlists"
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
-              pathname.startsWith("/playlists")
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <List className="w-5 h-5" />
-            <span className="text-[10px] font-medium">
-              {t.common.playlists}
-            </span>
-          </Link>
-          <Link
-            href="/notes"
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
-              pathname.startsWith("/notes")
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <FileText className="w-5 h-5" />
-            <span className="text-[10px] font-medium">{t.common.notes}</span>
-          </Link>
-          <Link
-            href="/preferences"
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
-              pathname.startsWith("/preferences")
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Settings className="w-5 h-5" />
-            <span className="text-[10px] font-medium">
-              {t.common.preferences}
-            </span>
-          </Link>
-        </div>
-      </nav>
-    </>
+          <DisclosurePanel className="sm:hidden">
+            <div className="space-y-1 px-2 pb-3 pt-2 flex flex-col gap-3 items-start">
+              {navigation.map((item) => (
+                <DisclosureButton
+                  key={item.name}
+                  as={Link}
+                  href={item.href}
+                  className="text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal]"
+                  aria-current={item.current ? "page" : undefined}
+                >
+                  {item.name}
+                </DisclosureButton>
+              ))}
+              <div className="flex gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <Link
+                  href="/notes"
+                  className="border rounded-lg border-solid border-[#2D2D2D] text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-[5px]"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/notes"
+                  className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-1.5 button"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </div>
+          </DisclosurePanel>
+        </>
+      )}
+    </Disclosure>
   );
 }
