@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@packages/backend/convex/_generated/api";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/clerk-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import {
@@ -34,6 +34,8 @@ import {
   User,
   CreditCard,
   Loader2,
+  Settings,
+  Sparkles,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { Locale } from "@/i18n";
@@ -98,22 +100,42 @@ export default function PreferencesPage() {
 
   if (!mounted || !isUserLoaded) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <main className="min-h-screen bg-background dark:bg-gradient-to-br dark:from-slate-900 dark:via-purple-900/50 dark:to-slate-900">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 dark:bg-purple-500/30 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 -left-40 w-96 h-96 bg-primary/5 dark:bg-blue-500/20 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-primary/5 dark:bg-pink-500/20 rounded-full blur-3xl" />
         </div>
-      </div>
+        <div className="relative z-10">
+          <Header />
+          <div className="container py-8">
+            <div className="flex items-center justify-center min-h-[50vh]">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          </div>
+        </div>
+      </main>
     );
   }
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">{t.preferencesPage.title}</h1>
-        <p className="text-muted-foreground">
-          {t.preferencesPage.signInRequired}
-        </p>
-      </div>
+      <main className="min-h-screen bg-background dark:bg-gradient-to-br dark:from-slate-900 dark:via-purple-900/50 dark:to-slate-900">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 dark:bg-purple-500/30 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 -left-40 w-96 h-96 bg-primary/5 dark:bg-blue-500/20 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-primary/5 dark:bg-pink-500/20 rounded-full blur-3xl" />
+        </div>
+        <div className="relative z-10">
+          <Header />
+          <div className="container py-8">
+            <h1 className="text-4xl font-bold mb-4">{t.preferencesPage.title}</h1>
+            <p className="text-muted-foreground">
+              {t.preferencesPage.signInRequired}
+            </p>
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -234,16 +256,33 @@ export default function PreferencesPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Header />
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">{t.preferencesPage.title}</h1>
-        <p className="text-muted-foreground">
-          {t.preferencesPage.subtitle}
-        </p>
+    <main className="min-h-screen bg-background dark:bg-gradient-to-br dark:from-slate-900 dark:via-purple-900/50 dark:to-slate-900">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 dark:bg-purple-500/30 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-primary/5 dark:bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-primary/5 dark:bg-pink-500/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="space-y-6">
+      <div className="relative z-10">
+        <Header />
+
+        <div className="container py-8 max-w-4xl">
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold text-foreground">
+                {t.preferencesPage.title}
+              </h1>
+              <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
+            </div>
+            <p className="text-muted-foreground text-sm ml-14">
+              {t.preferencesPage.subtitle}
+            </p>
+          </div>
+
+          <div className="space-y-6">
         {/* Account Section */}
         <Card>
           <CardHeader>
